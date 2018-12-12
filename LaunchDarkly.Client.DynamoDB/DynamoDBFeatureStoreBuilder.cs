@@ -6,7 +6,7 @@ namespace LaunchDarkly.Client.DynamoDB
 {
     /// <summary>
     /// Builder for a DynamoDB-based implementation of <see cref="IFeatureStore"/>.
-    /// Create an instance of the builder by calling <see cref="DatabaseComponents.DynamoDBFeatureStore"/>;
+    /// Create an instance of the builder by calling <see cref="DynamoDBComponents.DynamoDBFeatureStore"/>;
     /// configure it using the setter methods; then pass the builder to
     /// <see cref="ConfigurationExtensions.WithFeatureStore(Configuration, IFeatureStore)"/>.
     /// 

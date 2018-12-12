@@ -27,14 +27,14 @@ Quick setup
 4. When configuring your `LDClient`, add the DynamoDB feature store:
 
         Configuration ldConfig = Configuration.Default("YOUR_SDK_KEY")
-            .WithFeatureStoreFactory(DatabaseComponents.DynamoDBFeatureStore("my-table-name"));
+            .WithFeatureStoreFactory(DynamoDBComponents.DynamoDBFeatureStore("my-table-name"));
         LdClient ldClient = new LdClient(ldConfig);
 
 5. Optionally, you can change the DynamoDB configuration by calling methods on the builder returned by `DynamoDBFeatureStore()`:
 
         Configuration ldConfig = Configuration.Default("YOUR_SDK_KEY")
             .WithFeatureStoreFactory(
-                DatabaseComponents.DynamoDBFeatureStore("my-table-name")
+                DynamoDBComponents.DynamoDBFeatureStore("my-table-name")
                     .WithCredentials(new BasicAWSCredentials("my-key", "my-secret"))
             );
         LdClient ldClient = new LdClient(ldConfig);
@@ -42,7 +42,7 @@ Quick setup
 5. If you are running a [LaunchDarkly Relay Proxy](https://github.com/launchdarkly/ld-relay) instance, you can use it in [daemon mode](https://github.com/launchdarkly/ld-relay#daemon-mode), so that the SDK retrieves flag data only from Redis and does not communicate directly with LaunchDarkly. This is controlled by the SDK's `UseLdd` option:
 
         Configuration ldConfig = Configuration.Default("YOUR_SDK_KEY")
-            .WithFeatureStoreFactory(DatabaseComponents.DynamoDBFeatureStore("my-table-name"))
+            .WithFeatureStoreFactory(DynamoDBComponents.DynamoDBFeatureStore("my-table-name"))
             .WithUseLdd(true);
         LdClient ldClient = new LdClient(ldConfig);
 
@@ -51,12 +51,12 @@ Caching behavior
 
 To reduce traffic to DynamoDB, there is an optional in-memory cache that retains the last known data for a configurable amount of time. This is on by default; to turn it off (and guarantee that the latest feature flag data will always be retrieved from DynamoDB for every flag evaluation), configure the builder as follows:
 
-                DatabaseComponents.DynamoDBFeatureStore("my-table-name")
+                DynamoDBComponents.DynamoDBFeatureStore("my-table-name")
                     .WithCaching(FeatureStoreCaching.Disabled)
 
 Or, to cache for longer than the default of 30 seconds:
 
-                DatabaseComponents.DynamoDBFeatureStore("my-table-name")
+                DynamoDBComponents.DynamoDBFeatureStore("my-table-name")
                     .WithCaching(FeatureStoreCaching.Disabled.WithTtlSeconds(60))
 
 About LaunchDarkly

@@ -62,7 +62,7 @@ namespace LaunchDarkly.Client.DynamoDB.Tests
 
         public DynamoDBFeatureStoreTest()
         {
-            store = DatabaseComponents.DynamoDBFeatureStore(TableName)
+            store = DynamoDBComponents.DynamoDBFeatureStore(TableName)
                 .WithPrefix(Prefix)
                 .WithCredentials(MakeTestCredentials())
                 .WithConfiguration(MakeTestConfiguration())

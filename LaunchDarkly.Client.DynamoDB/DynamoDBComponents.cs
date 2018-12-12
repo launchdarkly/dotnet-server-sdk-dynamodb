@@ -7,7 +7,7 @@
     /// https://docs.launchdarkly.com/v2.0/docs/using-a-persistent-feature-store
     /// 
     /// To use the DynamoDB feature store with the LaunchDarkly client, you will first obtain a
-    /// builder by calling <see cref="DatabaseComponents.DynamoDBFeatureStore(string)"/>,
+    /// builder by calling <see cref="DynamoDBComponents.DynamoDBFeatureStore(string)"/>,
     /// then optionally  modify its properties, and then include it in your client configuration.
     /// For example:
     /// 
@@ -15,7 +15,7 @@
     /// using LaunchDarkly.Client;
     /// using LaunchDarkly.Client.DynamoDB;
     /// 
-    /// var store = DatabaseComponents.DynamoDBFeatureStore("my-table-name")
+    /// var store = DynamoDBComponents.DynamoDBFeatureStore("my-table-name")
     ///     .WithCaching(FeatureStoreCaching.Enabled.WithTtlSeconds(30));
     /// var config = Configuration.Default("my-sdk-key")
     ///     .WithFeatureStoreFactory(store);
@@ -35,7 +35,7 @@
     /// option and choose a different prefix string for each, so they will not interfere with each
     /// other's data. 
     /// </summary>
-    public abstract class DatabaseComponents
+    public abstract class DynamoDBComponents
     {
         /// <summary>
         /// Creates a builder for a DynamoDB feature store. You can modify any of the store's properties with
