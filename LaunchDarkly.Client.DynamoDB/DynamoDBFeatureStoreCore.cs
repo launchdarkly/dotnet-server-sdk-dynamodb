@@ -107,6 +107,8 @@ namespace LaunchDarkly.Client.DynamoDB
             requests.Add(new WriteRequest(new PutRequest(initedItem)));
 
             await DynamoDBHelpers.BatchWriteRequestsAsync(_client, _tableName, requests);
+
+            Log.InfoFormat("Initialized table {0} with {1} items", _tableName, numItems);
         }
 
         public async Task<IVersionedData> GetInternalAsync(IVersionedDataKind kind, String key)
