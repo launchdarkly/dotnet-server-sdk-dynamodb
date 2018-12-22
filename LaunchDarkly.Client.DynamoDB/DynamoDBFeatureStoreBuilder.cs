@@ -22,7 +22,7 @@ namespace LaunchDarkly.Client.DynamoDB
 
         private readonly string _tableName;
         private string _prefix = "";
-        private FeatureStoreCaching _caching = FeatureStoreCaching.Enabled;
+        private FeatureStoreCacheConfig _caching = FeatureStoreCacheConfig.Enabled;
         
         /// <summary>
         /// Creates a new <see cref="DynamoDBFeatureStoreBuilder"/> with default properties.
@@ -114,12 +114,12 @@ namespace LaunchDarkly.Client.DynamoDB
 
         /// <summary>
         /// Specifies whether local caching should be enabled and if so, sets the cache properties. Local
-        /// caching is enabled by default; see <see cref="FeatureStoreCaching.Enabled"/>. To disable it, pass
-        /// <see cref="FeatureStoreCaching.Disabled"/> to this method.
+        /// caching is enabled by default; see <see cref="FeatureStoreCacheConfig.Enabled"/>. To disable it, pass
+        /// <see cref="FeatureStoreCacheConfig.Disabled"/> to this method.
         /// </summary>
         /// <param name="caching">a <see cref="FeatureStoreCaching"/> object specifying caching parameters</param>
         /// <returns>the builder</returns>
-        public DynamoDBFeatureStoreBuilder WithCaching(FeatureStoreCaching caching)
+        public DynamoDBFeatureStoreBuilder WithCaching(FeatureStoreCacheConfig caching)
         {
             _caching = caching;
             return this;

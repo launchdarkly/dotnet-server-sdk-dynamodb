@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\dotnet-client-shared-tests\LaunchDarkly.Client.SharedTests\LaunchDarkly.Client.SharedTests.csproj" />
     <ProjectReference Include="..\LaunchDarkly.Client.DynamoDB\LaunchDarkly.Client.DynamoDB.csproj" />
   </ItemGroup>
 </Project>
