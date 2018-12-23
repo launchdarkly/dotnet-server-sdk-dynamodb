@@ -1,3 +1,0 @@
-[submodule "dotnet-client-shared-tests"]
-	path = dotnet-client-shared-tests
-	url = git@github.com:launchdarkly/dotnet-client-shared-tests.git
