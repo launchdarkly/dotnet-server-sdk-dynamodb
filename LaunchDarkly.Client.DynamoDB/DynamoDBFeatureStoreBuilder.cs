@@ -117,7 +117,7 @@ namespace LaunchDarkly.Client.DynamoDB
         /// caching is enabled by default; see <see cref="FeatureStoreCacheConfig.Enabled"/>. To disable it, pass
         /// <see cref="FeatureStoreCacheConfig.Disabled"/> to this method.
         /// </summary>
-        /// <param name="caching">a <see cref="FeatureStoreCaching"/> object specifying caching parameters</param>
+        /// <param name="caching">a <see cref="FeatureStoreCacheConfig"/> object specifying caching parameters</param>
         /// <returns>the builder</returns>
         public DynamoDBFeatureStoreBuilder WithCaching(FeatureStoreCacheConfig caching)
         {
