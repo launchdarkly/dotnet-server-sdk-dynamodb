@@ -61,6 +61,11 @@ Or, to cache for longer than the default of 30 seconds:
                 DynamoDBComponents.DynamoDBFeatureStore("my-table-name")
                     .WithCaching(FeatureStoreCacheConfig.Enabled.WithTtlSeconds(60))
 
+Signing
+-------
+
+The published version of this assembly is digitally signed by LaunchDarkly and strong-named. Building the code locally in the default Debug configuration does not sign the assembly and does not require a key file.
+
 Development notes
 -----------------
 
@@ -68,7 +73,7 @@ This project imports the `dotnet-base` and `dotnet-client-shared-tests` reposito
 
 To run unit tests, you must have a local DynamoDB server. More information [here](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html).
 
-Since the published package includes a .NET Framework 4.5 build, the release must be done from Windows.
+Releases are done using the release script in `dotnet-base`. Since the published package includes a .NET Framework 4.5 build, the release must be done from Windows.
 
 About LaunchDarkly
 -----------
