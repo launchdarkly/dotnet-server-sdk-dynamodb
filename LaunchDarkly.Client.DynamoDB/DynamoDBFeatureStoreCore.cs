@@ -59,7 +59,7 @@ namespace LaunchDarkly.Client.DynamoDB
 
             _client = client;
             _tableName = tableName;
-            _prefix = (prefix == "") ? null : _prefix;
+            _prefix = (prefix == "") ? null : prefix;
         }
         
         public async Task<bool> InitializedInternalAsync()

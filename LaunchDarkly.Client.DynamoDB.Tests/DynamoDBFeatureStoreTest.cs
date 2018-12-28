@@ -20,9 +20,7 @@ namespace LaunchDarkly.Client.DynamoDB.Tests
         protected override IFeatureStore CreateStoreImpl(FeatureStoreCacheConfig caching)
         {
             CreateTableIfNecessary();
-            return DynamoDBComponents.DynamoDBFeatureStore(TableName)
-                .WithCredentials(MakeTestCredentials())
-                .WithConfiguration(MakeTestConfiguration())
+            return BaseBuilder()
                 .WithCaching(caching)
                 .CreateFeatureStore();
         }
@@ -30,11 +28,17 @@ namespace LaunchDarkly.Client.DynamoDB.Tests
         protected override IFeatureStore CreateStoreImplWithPrefix(string prefix)
         {
             CreateTableIfNecessary();
+            return BaseBuilder()
+                .WithCaching(FeatureStoreCacheConfig.Disabled)
+                .WithPrefix(prefix)
+                .CreateFeatureStore();
+        }
+
+        private DynamoDBFeatureStoreBuilder BaseBuilder()
+        {
             return DynamoDBComponents.DynamoDBFeatureStore(TableName)
                 .WithCredentials(MakeTestCredentials())
-                .WithConfiguration(MakeTestConfiguration())
-                .WithCaching(FeatureStoreCacheConfig.Disabled)
-                .CreateFeatureStore();
+                .WithConfiguration(MakeTestConfiguration());
         }
 
         private AWSCredentials MakeTestCredentials()
