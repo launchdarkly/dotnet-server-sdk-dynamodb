@@ -12,5 +12,5 @@ jobs:
     steps:
       - checkout
       - run: dotnet restore
-      - run: dotnet build src\LaunchDarkly.Client.DynamoDB -f netstandard2.0
-      - run: dotnet test test\LaunchDarkly.Client.DynamoDB.Tests -f netcoreapp2.0
+      - run: dotnet build src/LaunchDarkly.Client.DynamoDB -f netstandard2.0
+      - run: dotnet test test/LaunchDarkly.Client.DynamoDB.Tests -f netcoreapp2.0
