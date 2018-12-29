@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.15.2" />
-    <PackageReference Include="LaunchDarkly.Client" Version="5.6.0-beta1" />
+    <PackageReference Include="LaunchDarkly.Client" Version="5.6.0-beta2" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
@@ -22,6 +22,6 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../LaunchDarkly.DynamoDB.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>../../LaunchDarkly.DynamoDB.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 </Project>

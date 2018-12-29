@@ -8,9 +8,8 @@ jobs:
   test-2.0:
     docker:
       - image: microsoft/dotnet:2.0-sdk-jessie
-      - image: amazon/dynamodb-local
     steps:
       - checkout
       - run: dotnet restore
-      - run: dotnet build src/LaunchDarkly.Client.DynamoDB -f netstandard2.0
-      - run: dotnet test test/LaunchDarkly.Client.DynamoDB.Tests -f netcoreapp2.0
+      - run: dotnet build LaunchDarkly.Client.SharedTests -f netstandard2.0
+      - run: dotnet test LaunchDarkly.Client.SharedTests.Tests/LaunchDarkly.Client.SharedTests.Tests.csproj -f netcoreapp2.0
