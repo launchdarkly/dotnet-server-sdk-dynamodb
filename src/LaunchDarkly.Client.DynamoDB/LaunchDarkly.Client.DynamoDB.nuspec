@@ -7,7 +7,6 @@
     <authors>$author$</authors>
     <owners>$author$</owners>
     <license type="expression">Apache-2.0</license>
-    <licenseUrl>https://raw.githubusercontent.com/launchdarkly/dotnet-client-dynamodb/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/launchdarkly/dotnet-client-dynamodb</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
