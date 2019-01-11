@@ -64,7 +64,7 @@ Or, to cache for longer than the default of 30 seconds:
 Signing
 -------
 
-The published version of this assembly is digitally signed by LaunchDarkly and strong-named. Building the code locally in the default Debug configuration does not sign the assembly and does not require a key file.
+The published version of this assembly is strong-named. Building the code locally in the default Debug configuration does not use strong-naming and does not require a key file.
 
 Development notes
 -----------------
