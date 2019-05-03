@@ -1,6 +1,6 @@
 LaunchDarkly SDK for .NET - DynamoDB integration
 =============================================
-[![CircleCI](https://circleci.com/gh/launchdarkly/dotnet-client-dynamodb.svg?style=svg)](https://circleci.com/gh/launchdarkly/dotnet-client-dynamodb)
+[![CircleCI](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb.svg?style=svg)](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb)
 
 This library provides a DynamoDB-backed persistence mechanism (feature store) for the [LaunchDarkly .NET SDK](https://github.com/launchdarkly/dotnet-client), replacing the default in-memory feature store. It uses the [AWS SDK for .NET](https://aws.amazon.com/sdk-for-net/).
 
