@@ -1,27 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Version>1.0.0</Version>
-    <PackageId>LaunchDarkly.Client.DynamoDB</PackageId>
-    <AssemblyName>LaunchDarkly.Client.DynamoDB</AssemblyName>
+    <Version>1.0.1</Version>
+    <PackageId>LaunchDarkly.ServerSdk.DynamoDB</PackageId>
+    <AssemblyName>LaunchDarkly.ServerSdk.DynamoDB</AssemblyName>
     <TargetFrameworks>netstandard1.6;netstandard2.0;net45</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <Description>LaunchDarkly .NET Client DynamoDB Integration</Description>
+    <Description>LaunchDarkly Server-Side .NET SDK DynamoDB Integration</Description>
     <Company>LaunchDarkly</Company>
     <Copyright>Copyright 2018 Catamorphic, Co.</Copyright>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/launchdarkly/dotnet-client-dynamodb/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/launchdarkly/dotnet-server-sdk-dynamodb/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.15.2" />
-    <PackageReference Include="LaunchDarkly.Client" Version="5.6.0" />
+    <PackageReference Include="LaunchDarkly.ServerSdk" Version="5.6.4" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.0\LaunchDarkly.Client.DynamoDB.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\netstandard2.0\LaunchDarkly.ServerSdk.DynamoDB.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../../LaunchDarkly.DynamoDB.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>../../LaunchDarkly.ServerSdk.DynamoDB.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 </Project>

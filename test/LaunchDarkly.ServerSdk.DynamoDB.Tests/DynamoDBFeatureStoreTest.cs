@@ -98,6 +98,7 @@ namespace LaunchDarkly.Client.DynamoDB.Tests
 
         override protected void ClearAllData()
         {
+            CreateTableIfNecessary();
             using (var client = CreateTestClient())
             {
                 WaitSafely(async () =>
