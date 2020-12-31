@@ -533,13 +533,24 @@ namespace LaunchDarkly.Sdk.Server.SharedTests.DataStore
         private static void AssertEqualsSerializedItem(TestEntity item, SerializedItemDescriptor? serializedItemDesc)
         {
             // This allows for the fact that a PersistentDataStore may not be able to get the item version without
-            // deserializing it, so we allow the version to be zero.
+            // deserializing it, so we allow the version to be zero. Also, there are two ways a store can return a
+            // deleted item, depending on its ability to persist metadata: either Deleted is true, in which case
+            // it doesn't matter what SerializedItem is, or else SerializedItem contains whatever placeholder
+            // string the DataKind uses to denote deleted items.
             Assert.NotNull(serializedItemDesc);
-            Assert.Equal(item.SerializedItemDescriptor.SerializedItem, serializedItemDesc.Value.SerializedItem);
             if (serializedItemDesc.Value.Version != 0)
             {
                 Assert.Equal(item.Version, serializedItemDesc.Value.Version);
             }
+            if (serializedItemDesc.Value.Deleted)
+            {
+                Assert.True(item.Deleted);
+            }
+            else
+            {
+                Assert.Equal(item.SerializedItemDescriptor.SerializedItem, serializedItemDesc.Value.SerializedItem);
+            }
+
         }
 
         private static void AssertSerializedItemsCollection(KeyedItems<SerializedItemDescriptor> serializedItems, params TestEntity[] expectedItems)

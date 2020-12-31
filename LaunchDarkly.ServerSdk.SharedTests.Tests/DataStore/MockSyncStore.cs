@@ -5,7 +5,6 @@ using static LaunchDarkly.Sdk.Server.Interfaces.DataStoreTypes;
 
 namespace LaunchDarkly.Sdk.Server.SharedTests.DataStore
 {
-
     public class MockSyncStore : IPersistentDataStore
     {
         private readonly MockDatabase _db;
