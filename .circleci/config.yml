@@ -7,10 +7,10 @@ workflows:
 jobs:
   test-2.0:
     docker:
-      - image: microsoft/dotnet:2.0-sdk-jessie
+      - image: mcr.microsoft.com/dotnet/core/sdk:2.1-focal
       - image: amazon/dynamodb-local
     steps:
       - checkout
       - run: dotnet restore
       - run: dotnet build src/LaunchDarkly.ServerSdk.DynamoDB -f netstandard2.0
-      - run: dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f netcoreapp2.0
+      - run: dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f netcoreapp2.1

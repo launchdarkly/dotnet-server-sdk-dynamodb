@@ -4,14 +4,9 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 
-namespace LaunchDarkly.Client.DynamoDB
+namespace LaunchDarkly.Sdk.Server.Integrations
 {
-    /// <summary>
-    /// Helper methods used to simplify DynamoDB SDK usage. You do not need to use these
-    /// directly to use the LaunchDarkly SDK, but they are public in case they might be useful
-    /// for other purposes.
-    /// </summary>
-    public abstract class DynamoDBHelpers
+    internal static class DynamoDBHelpers
     {
         /// <summary>
         /// Sends a list of write requests in batches as large as the AWS SDK will allow.
