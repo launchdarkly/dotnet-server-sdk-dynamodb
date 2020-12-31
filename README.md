@@ -2,15 +2,20 @@
 
 [![CircleCI](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb.svg?style=svg)](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb)
 
-This library provides a DynamoDB-backed persistence mechanism (feature store) for the [LaunchDarkly .NET SDK](https://github.com/launchdarkly/dotnet-server-sdk), replacing the default in-memory feature store. It uses the [AWS SDK for .NET](https://aws.amazon.com/sdk-for-net/).
+This library provides a DynamoDB-backed persistence mechanism (data store) for the [LaunchDarkly server-side .NET SDK](https://github.com/launchdarkly/dotnet-server-sdk), replacing the default in-memory data store. It uses the [AWS SDK for .NET](https://aws.amazon.com/sdk-for-net/).
 
-The minimum version of the LaunchDarkly .NET SDK for use with this library is 5.6.0.
+For more information, see also: [Using a persistent data store](https://docs.launchdarkly.com/v2.0/docs/using-a-persistent-feature-store).
 
-For more information, see also: [Using a persistent feature store](https://docs.launchdarkly.com/v2.0/docs/using-a-persistent-feature-store).
+Version 2.0.0 and above of this library works with version 6.0.0 and above of the LaunchDarkly .NET SDK. For earlier versions of the SDK, use the latest 1.x release of this library.
 
 ## .NET platform compatibility
 
-This version of the library is compatible with .NET Framework version 4.5 and above, .NET Standard 1.6, and .NET Standard 2.0.
+This version of the library is built for the following targets:
+
+* .NET Framework 4.5.2: runs on .NET Framework 4.5.x and above.
+* .NET Standard 2.0: runs on .NET Core 2.x and 3.x, or .NET 5, in an application; or within a library that is targeted to .NET Standard 2.x or .NET 5.
+
+The .NET build tools should automatically load the most appropriate build of the library for whatever platform your application or library is targeted to.
 
 ## Quick setup
 
@@ -22,53 +27,52 @@ This version of the library is compatible with .NET Framework version 4.5 and ab
 
 3. Import the package (note that the namespace is different from the package name):
 
-        using LaunchDarkly.Client.DynamoDB;
+        using LaunchDarkly.Sdk.Server.Integrations;
 
-4. When configuring your `LDClient`, add the DynamoDB feature store:
+4. When configuring your `LdClient`, add the DynamoDB data store as a `PersistentDataStore`. You may specify any custom DynamoDB options using the methods of `DynamoDBDataStoreBuilder`. For instance, if you are passing in your AWS credentials programmatically from a variable called `myCredentials`:
 
-        Configuration ldConfig = Configuration.Default("YOUR_SDK_KEY")
-            .WithFeatureStoreFactory(DynamoDBComponents.DynamoDBFeatureStore("my-table-name"));
-        LdClient ldClient = new LdClient(ldConfig);
-
-5. Optionally, you can change the DynamoDB configuration by calling methods on the builder returned by `DynamoDBFeatureStore()`:
-
-        Configuration ldConfig = Configuration.Default("YOUR_SDK_KEY")
-            .WithFeatureStoreFactory(
-                DynamoDBComponents.DynamoDBFeatureStore("my-table-name")
-                    .WithCredentials(new BasicAWSCredentials("my-key", "my-secret"))
-            );
-        LdClient ldClient = new LdClient(ldConfig);
-
-6. If you are running a [LaunchDarkly Relay Proxy](https://github.com/launchdarkly/ld-relay) instance, you can use it in [daemon mode](https://github.com/launchdarkly/ld-relay#daemon-mode), so that the SDK retrieves flag data only from Redis and does not communicate directly with LaunchDarkly. This is controlled by the SDK's `UseLdd` option:
-
-        Configuration ldConfig = Configuration.Default("YOUR_SDK_KEY")
-            .WithFeatureStoreFactory(DynamoDBComponents.DynamoDBFeatureStore("my-table-name"))
-            .WithUseLdd(true);
-        LdClient ldClient = new LdClient(ldConfig);
+        var ldConfig = Configuration.Default("YOUR_SDK_KEY")
+            .DataStore(
+                Components.PersistentDataStore(
+                    DynamoDB.DataStore("my-table-name").Credentials(myCredentials)
+                )
+            )
+            .Build();
+        var ldClient = new LdClient(ldConfig);
 
 ## Caching behavior
 
-To reduce traffic to DynamoDB, there is an optional in-memory cache that retains the last known data for a configurable amount of time. This is on by default; to turn it off (and guarantee that the latest feature flag data will always be retrieved from DynamoDB for every flag evaluation), configure the builder as follows:
+The LaunchDarkly SDK has a standard caching mechanism for any persistent data store, to reduce database traffic. This is configured through the SDK's `PersistentDataStoreBuilder` class as described the SDK documentation. For instance, to specify a cache TTL of 5 minutes:
 
-                DynamoDBComponents.DynamoDBFeatureStore("my-table-name")
-                    .WithCaching(FeatureStoreCacheConfig.Disabled)
+        var config = Configuration.Default("YOUR_SDK_KEY")
+            .DataStore(
+                Components.PersistentDataStore(
+                    DynamoDB.DataStore("my-table-name").Credentials(myCredentials)
+                ).CacheTime(TimeSpan.FromMinutes(5))
+            )
+            .Build();
 
-Or, to cache for longer than the default of 30 seconds:
+## How the SDK uses DynamoDB
 
-                DynamoDBComponents.DynamoDBFeatureStore("my-table-name")
-                    .WithCaching(FeatureStoreCacheConfig.Enabled.WithTtlSeconds(60))
+The DynamoDB integrations for all LaunchDarkly server-side SDKs use the same conventions, so that SDK instances and Relay Proxy instances sharing a single DynamoDB table can interoperate correctly. The storage schema is as follows:
+
+* For each data item that the SDK can store, such as a feature flag, there is a single DynamoDB data item, with the following attributes:
+    * `namespace`: a string value that denotes the type of data. Currently, the types are `features` and `segments`, but this is subject to change in the future. If you have specified a prefix string, then the `namespace` key is set to `PREFIX:features` or `PREFIX:segments` instead (where `PREFIX` is your configured prefix).
+    * `key`: the unique key of the item (such as the flag key for a feature flag).
+    * `version`: a number that the SDK uses to keep track of updates.
+    * `item`: a serialized representation of the data item, in a format that is determined by the SDK.
+
+* An additional item with a `namespace` of `$inited` (or `PREFIX:$inited`) is created when the SDK has stored a full set of feature flag data. This allows a new SDK instance to check whether there is already a valid data set that was stored earlier.
+
+* The SDK will never add, modify, or remove any items in the DynamoDB table other than the ones described above, so it is safe to share a DynamoDB table that is also being used for other purposes.
 
 ## Signing
 
 The published version of this assembly is strong-named. Building the code locally in the default Debug configuration does not use strong-naming and does not require a key file.
 
-## Development notes
+## Contributing
 
-This project imports the `dotnet-base` and `dotnet-server-sdk-shared-tests` repositories as subtrees. See the `README.md` file in each of those directories for more information.
-
-To run unit tests, you must have a local DynamoDB server. More information [here](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html).
-
-Releases are done using the release script in `dotnet-base`. Since the published package includes a .NET Framework 4.5 build, the release must be done from Windows.
+See [Contributing](./CONTRIBUTING.md).
 
 ## About LaunchDarkly
  
