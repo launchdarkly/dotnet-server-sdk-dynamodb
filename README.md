@@ -2,9 +2,9 @@
 
 [![CircleCI](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb.svg?style=svg)](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb)
 
-This library provides a DynamoDB-backed persistence mechanism (feature store) for the [LaunchDarkly .NET SDK](https://github.com/launchdarkly/dotnet-server-sdk), replacing the default in-memory feature store. It uses the [AWS SDK for .NET](https://aws.amazon.com/sdk-for-net/).
+This library provides a DynamoDB-backed persistence mechanism (data store) for the [LaunchDarkly .NET SDK](https://github.com/launchdarkly/dotnet-server-sdk), replacing the default in-memory data store. It uses the [AWS SDK for .NET](https://aws.amazon.com/sdk-for-net/).
 
-The minimum version of the LaunchDarkly .NET SDK for use with this library is 5.6.0.
+The minimum version of the LaunchDarkly .NET SDK for use with the current version of this library is 5.14.0. For earlier versions of the SDK, use version 1.0.x of this library.
 
 For more information, see also: [Using a persistent feature store](https://docs.launchdarkly.com/v2.0/docs/using-a-persistent-feature-store).
 
@@ -22,41 +22,34 @@ This version of the library is compatible with .NET Framework version 4.5 and ab
 
 3. Import the package (note that the namespace is different from the package name):
 
-        using LaunchDarkly.Client.DynamoDB;
+        using LaunchDarkly.Client.Integrations;
 
-4. When configuring your `LDClient`, add the DynamoDB feature store:
+4. When configuring your `LDClient`, add the DynamoDB data store as a `PersistentDataStore`. You may specify any custom DynamoDB options using the methods of `DynamoDBDataStoreBuilder`. For instance, if you are passing in your AWS credentials programmatically from a variable called `myCredentials`:
 
-        Configuration ldConfig = Configuration.Default("YOUR_SDK_KEY")
-            .WithFeatureStoreFactory(DynamoDBComponents.DynamoDBFeatureStore("my-table-name"));
-        LdClient ldClient = new LdClient(ldConfig);
-
-5. Optionally, you can change the DynamoDB configuration by calling methods on the builder returned by `DynamoDBFeatureStore()`:
-
-        Configuration ldConfig = Configuration.Default("YOUR_SDK_KEY")
-            .WithFeatureStoreFactory(
-                DynamoDBComponents.DynamoDBFeatureStore("my-table-name")
-                    .WithCredentials(new BasicAWSCredentials("my-key", "my-secret"))
-            );
-        LdClient ldClient = new LdClient(ldConfig);
-
-6. If you are running a [LaunchDarkly Relay Proxy](https://github.com/launchdarkly/ld-relay) instance, you can use it in [daemon mode](https://github.com/launchdarkly/ld-relay#daemon-mode), so that the SDK retrieves flag data only from Redis and does not communicate directly with LaunchDarkly. This is controlled by the SDK's `UseLdd` option:
-
-        Configuration ldConfig = Configuration.Default("YOUR_SDK_KEY")
-            .WithFeatureStoreFactory(DynamoDBComponents.DynamoDBFeatureStore("my-table-name"))
-            .WithUseLdd(true);
-        LdClient ldClient = new LdClient(ldConfig);
+```csharp
+        var ldConfig = Configuration.Default("YOUR_SDK_KEY")
+            .DataStore(
+                Components.PersistentDataStore(
+                    DynamoDB.DataStore("my-table-name").Credentials(myCredentials)
+                )
+            )
+            .Build();
+        var ldClient = new LdClient(ldConfig);
+```
 
 ## Caching behavior
 
-To reduce traffic to DynamoDB, there is an optional in-memory cache that retains the last known data for a configurable amount of time. This is on by default; to turn it off (and guarantee that the latest feature flag data will always be retrieved from DynamoDB for every flag evaluation), configure the builder as follows:
+The LaunchDarkly SDK has a standard caching mechanism for any persistent data store, to reduce database traffic. This is configured through the SDK's `PersistentDataStoreBuilder` class as described the SDK documentation. For instance, to specify a cache TTL of 5 minutes:
 
-                DynamoDBComponents.DynamoDBFeatureStore("my-table-name")
-                    .WithCaching(FeatureStoreCacheConfig.Disabled)
-
-Or, to cache for longer than the default of 30 seconds:
-
-                DynamoDBComponents.DynamoDBFeatureStore("my-table-name")
-                    .WithCaching(FeatureStoreCacheConfig.Enabled.WithTtlSeconds(60))
+```csharp
+        var config = Configuration.Default("YOUR_SDK_KEY")
+            .DataStore(
+                Components.PersistentDataStore(
+                    DynamoDB.DataStore("my-table-name").Credentials(myCredentials)
+                ).CacheTime(TimeSpan.FromMinutes(5))
+            )
+            .Build();
+```
 
 ## Signing
 
