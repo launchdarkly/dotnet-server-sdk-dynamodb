@@ -39,7 +39,7 @@ This version of the library is compatible with .NET Framework version 4.5 and ab
 
 ## Caching behavior
 
-The LaunchDarkly SDK has a standard caching mechanism for any persistent data store, to reduce database traffic. This is configured through the SDK's `PersistentDataStoreBuilder` class as described the SDK documentation. For instance, to specify a cache TTL of 5 minutes:
+The LaunchDarkly SDK has a standard caching mechanism for any persistent data store, to reduce database traffic. This is configured through the SDK's `PersistentDataStoreBuilder` class as described in the SDK documentation. For instance, to specify a cache TTL of 5 minutes:
 
 ```csharp
         var config = Configuration.Default("YOUR_SDK_KEY")
