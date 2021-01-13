@@ -19,11 +19,11 @@ namespace LaunchDarkly.Client.Integrations
         public const string DataStoreSortKey = "key";
 
         /// <summary>
-        /// Returns a builder object for creating a Redis-backed data store.
+        /// Returns a builder object for creating a DynamoDB-backed data store.
         /// </summary>
         /// <remarks>
         /// This object can be modified with <see cref="DynamoDBDataStoreBuilder"/> methods for any desired
-        /// custom Redis options. Then, pass it to <see cref="Components.PersistentDataStore(Interfaces.IPersistentDataStoreAsyncFactory)"/>
+        /// custom DynamoDB options. Then, pass it to <see cref="Components.PersistentDataStore(Interfaces.IPersistentDataStoreAsyncFactory)"/>
         /// and set any desired caching options. Finally, pass the result to <see cref="IConfigurationBuilder.DataStore(Interfaces.IFeatureStoreFactory)"/>.
         /// </remarks>
         /// <example>
