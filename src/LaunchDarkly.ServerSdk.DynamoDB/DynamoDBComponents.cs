@@ -1,4 +1,6 @@
-﻿namespace LaunchDarkly.Client.DynamoDB
+﻿using System;
+
+namespace LaunchDarkly.Client.DynamoDB
 {
     /// <summary>
     /// Obsolete entry point for the DynamoDB integration.

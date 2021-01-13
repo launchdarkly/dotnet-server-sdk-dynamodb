@@ -1,4 +1,5 @@
-﻿using Amazon.DynamoDBv2;
+﻿using System;
+using Amazon.DynamoDBv2;
 using Amazon.Runtime;
 using LaunchDarkly.Client.Utils;
 
