@@ -1,11 +1,17 @@
-version: 2
+version: 2.1
+
+orbs:
+  win: circleci/windows@2.4.0
+
 workflows:
   version: 2
   test:
     jobs:
-      - test-2.0
+      - test_dotnetcore
+      - test_dotnetframework
+
 jobs:
-  test-2.0:
+  test_dotnetcore:
     docker:
       - image: microsoft/dotnet:2.0-sdk-jessie
       - image: amazon/dynamodb-local
@@ -14,3 +20,20 @@ jobs:
       - run: dotnet restore
       - run: dotnet build src/LaunchDarkly.ServerSdk.DynamoDB -f netstandard2.0
       - run: dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f netcoreapp2.0
+
+  test_dotnetframework:
+    executor:
+      name: win/default
+      shell: powershell.exe
+    steps:
+      - checkout
+      - run:
+          name: download DynamoDB
+          command: (New-Object System.Net.WebClient).DownloadFile("https://s3.us-west-2.amazonaws.com/dynamodb-local/dynamodb_local_latest.zip", "dynamodb.jar")
+      - run:
+          name: run DynamoDB
+          command: java -Djava.library.path=. -jar dynamodb.jar -sharedDb
+          background: true
+      - run: dotnet restore
+      - run: dotnet build src/LaunchDarkly.ServerSdk.DynamoDB -f net45
+      - run: dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f net45
