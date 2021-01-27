@@ -1,19 +1,22 @@
-﻿using Amazon.DynamoDBv2;
+﻿using System;
+using Amazon.DynamoDBv2;
 using Amazon.Runtime;
 using LaunchDarkly.Client.Utils;
 
 namespace LaunchDarkly.Client.DynamoDB
 {
     /// <summary>
-    /// Builder for a DynamoDB-based implementation of <see cref="IFeatureStore"/>.
-    /// Create an instance of the builder by calling <see cref="DynamoDBComponents.DynamoDBFeatureStore"/>;
-    /// configure it using the setter methods; then pass the builder to
-    /// <see cref="ConfigurationExtensions.WithFeatureStore(Configuration, IFeatureStore)"/>.
-    /// 
-    /// The AWS SDK provides many configuration options for a DynamoDB client. This class has
-    /// corresponding methods for some of the most commonly used ones, but also allows you to use
-    /// AWS SDK classes to access the full range of options.
+    /// Obsolete builder for the DynamoDB data store.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This class is retained in version 1.1 of the library for backward compatibility. For the new
+    /// preferred way to configure the DynamoDB integration, see <see cref="LaunchDarkly.Client.Integrations.DynamoDB"/>.
+    /// Updating to the latter now will make it easier to adopt version 6.0 of the LaunchDarkly .NET SDK, since
+    /// an identical API is used there (except for the base namespace).
+    /// </para>
+    /// </remarks>
+    [Obsolete("Use LaunchDarkly.Client.Integrations.DynamoDB")]
     public sealed class DynamoDBFeatureStoreBuilder : IFeatureStoreFactory
     {
         private AmazonDynamoDBClient _existingClient = null;
