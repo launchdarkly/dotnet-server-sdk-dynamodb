@@ -2,6 +2,8 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>LaunchDarkly.Client.Integrations</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

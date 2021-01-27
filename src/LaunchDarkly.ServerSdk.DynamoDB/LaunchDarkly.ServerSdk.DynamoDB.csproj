@@ -1,14 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Version>1.1.0</Version>
+    <TargetFrameworks>netstandard1.6;netstandard2.0;net45</TargetFrameworks>
     <PackageId>LaunchDarkly.ServerSdk.DynamoDB</PackageId>
     <AssemblyName>LaunchDarkly.ServerSdk.DynamoDB</AssemblyName>
-    <TargetFrameworks>netstandard1.6;netstandard2.0;net45</TargetFrameworks>
     <OutputType>Library</OutputType>
+    <LangVersion>7.3</LangVersion>
     <Description>LaunchDarkly Server-Side .NET SDK DynamoDB Integration</Description>
     <Company>LaunchDarkly</Company>
     <Copyright>Copyright 2018 Catamorphic, Co.</Copyright>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/launchdarkly/dotnet-server-sdk-dynamodb/master/LICENSE</PackageLicenseUrl>
+    <LicenseExpression>Apache-2.0</LicenseExpression>
+    <PackageProjectUrl>https://github.com/launchdarkly/dotnet-server-sdk-dynamodb</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/launchdarkly/dotnet-server-sdk-dynamodb</RepositoryUrl>
+    <RepositoryBranch>master</RepositoryBranch>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <RootNamespace>LaunchDarkly.Client.Integrations</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,8 +26,9 @@
   <ItemGroup>
     <Folder Include="Integrations\" />
   </ItemGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.0\LaunchDarkly.ServerSdk.DynamoDB.xml</DocumentationFile>
+
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\LaunchDarkly.ServerSdk.DynamoDB.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">

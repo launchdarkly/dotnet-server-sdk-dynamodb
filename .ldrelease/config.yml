@@ -1,0 +1,18 @@
+publications:
+  - url: https://nuget.org/packages/LaunchDarkly.ServerSdk.DynamoDB
+    description: NuGet
+
+circleci:
+  windows:
+    context: org-global
+    skip:
+      - test  # tests require DynamoDB - run them only in CI
+    env:
+      LD_RELEASE_DOCS_TARGET_FRAMEWORK: netstandard2.0
+
+template:
+  name: dotnet-windows
+
+documentation:
+  title: LaunchDarkly SDK DynamoDB Integration
+  githubPages: true
