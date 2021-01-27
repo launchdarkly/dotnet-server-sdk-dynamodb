@@ -40,4 +40,4 @@ jobs:
           background: true
       - run: dotnet restore
       - run: dotnet build src/LaunchDarkly.ServerSdk.DynamoDB -f net45
-      - run: dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f net45
+      - run: dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f net452
