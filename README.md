@@ -4,15 +4,20 @@
 [![CircleCI](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb.svg?style=shield)](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb)
 [![Documentation](https://img.shields.io/static/v1?label=GitHub+Pages&message=API+reference&color=00add8)](https://launchdarkly.github.io/dotnet-server-sdk-dynamodb)
 
-This library provides a DynamoDB-backed persistence mechanism (data store) for the [LaunchDarkly .NET SDK](https://github.com/launchdarkly/dotnet-server-sdk), replacing the default in-memory data store. It uses the [AWS SDK for .NET](https://aws.amazon.com/sdk-for-net/).
+This library provides a DynamoDB-backed persistence mechanism (data store) for the [LaunchDarkly server-side .NET SDK](https://github.com/launchdarkly/dotnet-server-sdk), replacing the default in-memory data store. It uses the [AWS SDK for .NET](https://aws.amazon.com/sdk-for-net/).
 
-The minimum version of the LaunchDarkly .NET SDK for use with the current version of this library is 5.14.0. For earlier versions of the SDK, use version 1.0.x of this library.
+For more information, see also: [Using a persistent data store](https://docs.launchdarkly.com/v2.0/docs/using-a-persistent-feature-store).
 
-For more information, see also: [Using a persistent feature store](https://docs.launchdarkly.com/v2.0/docs/using-a-persistent-feature-store).
+Version 2.0.0 and above of this library works with version 6.0.0 and above of the LaunchDarkly .NET SDK. For earlier versions of the SDK, use the latest 1.x release of this library.
 
 ## .NET platform compatibility
 
-This version of the library is compatible with .NET Framework version 4.5 and above, .NET Standard 1.6, and .NET Standard 2.0.
+This version of the library is built for the following targets:
+
+* .NET Framework 4.5.2: runs on .NET Framework 4.5.x and above.
+* .NET Standard 2.0: runs on .NET Core 2.x and 3.x, or .NET 5, in an application; or within a library that is targeted to .NET Standard 2.x or .NET 5.
+
+The .NET build tools should automatically load the most appropriate build of the library for whatever platform your application or library is targeted to.
 
 ## Quick setup
 
@@ -24,9 +29,9 @@ This version of the library is compatible with .NET Framework version 4.5 and ab
 
 3. Import the package (note that the namespace is different from the package name):
 
-        using LaunchDarkly.Client.Integrations;
+        using LaunchDarkly.Sdk.Server.Integrations;
 
-4. When configuring your `LDClient`, add the DynamoDB data store as a `PersistentDataStore`. You may specify any custom DynamoDB options using the methods of `DynamoDBDataStoreBuilder`. For instance, if you are passing in your AWS credentials programmatically from a variable called `myCredentials`:
+4. When configuring your `LdClient`, add the DynamoDB data store as a `PersistentDataStore`. You may specify any custom DynamoDB options using the methods of `DynamoDBDataStoreBuilder`. For instance, if you are passing in your AWS credentials programmatically from a variable called `myCredentials`:
 
 ```csharp
         var ldConfig = Configuration.Default("YOUR_SDK_KEY")

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Version>1.1.0</Version>
-    <TargetFrameworks>netstandard1.6;netstandard2.0;net45</TargetFrameworks>
+    <Version>2.0.0-alpha.1</Version>
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
     <PackageId>LaunchDarkly.ServerSdk.DynamoDB</PackageId>
     <AssemblyName>LaunchDarkly.ServerSdk.DynamoDB</AssemblyName>
     <OutputType>Library</OutputType>
@@ -11,22 +11,18 @@
     <Authors>LaunchDarkly</Authors>
     <Owners>LaunchDarkly</Owners>
     <Copyright>Copyright 2018 Catamorphic, Co.</Copyright>
-    <LicenseExpression>Apache-2.0</LicenseExpression>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/launchdarkly/dotnet-server-sdk-dynamodb</PackageProjectUrl>
     <RepositoryUrl>https://github.com/launchdarkly/dotnet-server-sdk-dynamodb</RepositoryUrl>
     <RepositoryBranch>master</RepositoryBranch>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <RootNamespace>LaunchDarkly.Client.Integrations</RootNamespace>
+    <RootNamespace>LaunchDarkly.Sdk.Server.Integrations</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="[3.3.15.2,]" />
-    <PackageReference Include="LaunchDarkly.ServerSdk" Version="[5.14.0,6.0.0)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Integrations\" />
+    <PackageReference Include="LaunchDarkly.ServerSdk" Version="[6.0.0-alpha.9,]" />
   </ItemGroup>
 
   <PropertyGroup>

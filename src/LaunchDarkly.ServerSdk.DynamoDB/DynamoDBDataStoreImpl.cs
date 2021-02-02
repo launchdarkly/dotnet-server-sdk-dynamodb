@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using Common.Logging;
-using LaunchDarkly.Client.Utils;
+using LaunchDarkly.Logging;
+using LaunchDarkly.Sdk.Server.Interfaces;
 
-namespace LaunchDarkly.Client.DynamoDB
+using static LaunchDarkly.Sdk.Server.Interfaces.DataStoreTypes;
+
+namespace LaunchDarkly.Sdk.Server.Integrations
 {
     /// <summary>
     /// Internal implementation of the DynamoDB feature store.
@@ -41,51 +44,69 @@ namespace LaunchDarkly.Client.DynamoDB
     /// * DynamoDB has a maximum item size of 400KB. Since each feature flag or user segment is
     /// stored as a single item, this mechanism will not work for extremely large flags or segments.
     /// </summary>
-    internal sealed class DynamoDBFeatureStoreCore : IFeatureStoreCoreAsync
+    internal sealed class DynamoDBDataStoreImpl : IPersistentDataStoreAsync
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(DynamoDBFeatureStoreCore));
-
         // These attribute names aren't public because application code should never access them directly
         private const string VersionAttribute = "version";
-        private const string ItemJsonAttribute = "item";
+        private const string SerializedItemAttribute = "item";
+        private const string DeletedItemPlaceholder = "null"; // DynamoDB does not allow empty strings
 
         private readonly AmazonDynamoDBClient _client;
+        private readonly bool _wasExistingClient;
         private readonly string _tableName;
         private readonly string _prefix;
-        
-        internal DynamoDBFeatureStoreCore(AmazonDynamoDBClient client, string tableName, string prefix)
-        {
-            Log.InfoFormat("Creating DynamoDB feature store with table name \"{0}\"", tableName);
+        private readonly Logger _log;
 
+        internal DynamoDBDataStoreImpl(
+            AmazonDynamoDBClient client,
+            bool wasExistingClient,
+            string tableName,
+            string prefix,
+            Logger log
+            )
+        {
             _client = client;
+            _wasExistingClient = wasExistingClient;
             _tableName = tableName;
-            _prefix = (prefix == "") ? null : prefix;
+            _log = log;
+
+            if (string.IsNullOrEmpty(prefix))
+            {
+                _prefix = null;
+                _log.Info("Using DynamoDB data store with table name \"{0}\" and no prefix", tableName);
+            }
+            else
+            {
+                _log.Info("Using DynamoDB data store with table name \"{0}\" and prefix \"{1}\"",
+                    tableName, prefix);
+                _prefix = prefix;
+            }
         }
         
-        public async Task<bool> InitializedInternalAsync()
+        public async Task<bool> InitializedAsync()
         {
             var resp = await GetItemByKeys(InitedKey, InitedKey);
             return resp.Item != null && resp.Item.Count > 0;
         }
 
-        public async Task InitInternalAsync(IDictionary<IVersionedDataKind, IDictionary<string, IVersionedData>> allData)
+        public async Task InitAsync(FullDataSet<SerializedItemDescriptor> allData)
         {
             // Start by reading the existing keys; we will later delete any of these that weren't in allData.
-            var unusedOldKeys = await ReadExistingKeys(allData.Keys);
+            var unusedOldKeys = await ReadExistingKeys(allData.Data.Select(collection => collection.Key));
 
             var requests = new List<WriteRequest>();
             var numItems = 0;
 
             // Insert or update every provided item
-            foreach (var entry in allData)
+            foreach (var collection in allData.Data)
             {
-                var kind = entry.Key;
-                foreach (var item in entry.Value.Values)
+                var kind = collection.Key;
+                foreach (var keyAndItem in collection.Value.Items)
                 {
-                    var encodedItem = MarshalItem(kind, item);
+                    var encodedItem = MarshalItem(kind, keyAndItem.Key, keyAndItem.Value);
                     requests.Add(new WriteRequest(new PutRequest(encodedItem)));
 
-                    var combinedKey = new Tuple<string, string>(NamespaceForKind(kind), item.Key);
+                    var combinedKey = new Tuple<string, string>(NamespaceForKind(kind), keyAndItem.Key);
                     unusedOldKeys.Remove(combinedKey);
 
                     numItems++;
@@ -108,34 +129,35 @@ namespace LaunchDarkly.Client.DynamoDB
 
             await DynamoDBHelpers.BatchWriteRequestsAsync(_client, _tableName, requests);
 
-            Log.InfoFormat("Initialized table {0} with {1} items", _tableName, numItems);
+            _log.Info("Initialized data store with {0} items", numItems);
         }
 
-        public async Task<IVersionedData> GetInternalAsync(IVersionedDataKind kind, String key)
+        public async Task<SerializedItemDescriptor?> GetAsync(DataKind kind, String key)
         {
             var resp = await GetItemByKeys(NamespaceForKind(kind), key);
             return UnmarshalItem(kind, resp.Item);
         }
         
-        public async Task<IDictionary<string, IVersionedData>> GetAllInternalAsync(IVersionedDataKind kind)
+        public async Task<KeyedItems<SerializedItemDescriptor>> GetAllAsync(DataKind kind)
         {
-            var ret = new Dictionary<string, IVersionedData>();
+            var ret = new List<KeyValuePair<string, SerializedItemDescriptor>>();
             var req = MakeQueryForKind(kind);
             await DynamoDBHelpers.IterateQuery(_client, req,
                 item =>
                 {
                     var itemOut = UnmarshalItem(kind, item);
-                    if (itemOut != null)
+                    if (itemOut.HasValue)
                     {
-                        ret[itemOut.Key] = itemOut;
+                        var itemKey = item[DynamoDB.DataStoreSortKey].S;
+                        ret.Add(new KeyValuePair<string, SerializedItemDescriptor>(itemKey, itemOut.Value));
                     }
                 });
-            return ret;
+            return new KeyedItems<SerializedItemDescriptor>(ret);
         }
 
-        public async Task<IVersionedData> UpsertInternalAsync(IVersionedDataKind kind, IVersionedData item)
+        public async Task<bool> UpsertAsync(DataKind kind, string key, SerializedItemDescriptor newItem)
         {
-            var encodedItem = MarshalItem(kind, item);
+            var encodedItem = MarshalItem(kind, key, newItem);
             
             try
             {
@@ -143,26 +165,37 @@ namespace LaunchDarkly.Client.DynamoDB
                 request.ConditionExpression = "attribute_not_exists(#namespace) or attribute_not_exists(#key) or :version > #version";
                 request.ExpressionAttributeNames = new Dictionary<string, string>()
                 {
-                    { "#namespace", Constants.PartitionKey },
-                    { "#key", Constants.SortKey },
+                    { "#namespace", DynamoDB.DataStorePartitionKey },
+                    { "#key", DynamoDB.DataStoreSortKey },
                     { "#version", VersionAttribute }
                 };
                 request.ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
                 {
-                    { ":version", new AttributeValue() { N = Convert.ToString(item.Version) } }
+                    { ":version", new AttributeValue() { N = Convert.ToString(newItem.Version) } }
                 };
                 await _client.PutItemAsync(request);
             }
             catch (ConditionalCheckFailedException)
             {
-                // The item was not updated because there's a newer item in the database.
-                // We must now read the item that's in the database and return it, so CachingStoreWrapper can cache it.
-                return await GetInternalAsync(kind, item.Key);
+                return false;
             }
 
-            return item;
+            return true;
         }
-        
+
+        public async Task<bool> IsStoreAvailableAsync()
+        {
+            try
+            {
+                await InitializedAsync(); // don't care about the return value, just that it doesn't throw an exception
+                return true;
+            }
+            catch
+            { // don't care about exception class, since any exception means the DynamoDB request couldn't be made
+                return false;
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -173,38 +206,29 @@ namespace LaunchDarkly.Client.DynamoDB
         {
             if (disposing)
             {
-                _client.Dispose();
+                if (_wasExistingClient)
+                {
+                    _client.Dispose();
+                }
             }
         }
 
-        private string PrefixedNamespace(string baseStr)
-        {
-            return _prefix == null ? baseStr : (_prefix + ":" + baseStr);
-        }
+        private string PrefixedNamespace(string baseStr) =>
+            _prefix is null ? baseStr : (_prefix + ":" + baseStr);
 
-        private string NamespaceForKind(IVersionedDataKind kind)
-        {
-            return PrefixedNamespace(kind.GetNamespace());
-        }
+        private string NamespaceForKind(DataKind kind) =>
+            PrefixedNamespace(kind.Name);
 
-        private string InitedKey
-        {
-            get
+        private string InitedKey => PrefixedNamespace("$inited");
+
+        private Dictionary<string, AttributeValue> MakeKeysMap(string ns, string key) =>
+            new Dictionary<string, AttributeValue>()
             {
-                return PrefixedNamespace("$inited");
-            }
-        }
-
-        private Dictionary<string, AttributeValue> MakeKeysMap(string ns, string key)
-        {
-            return new Dictionary<string, AttributeValue>()
-            {
-                { Constants.PartitionKey, new AttributeValue(ns) },
-                { Constants.SortKey, new AttributeValue(key) }
+                { DynamoDB.DataStorePartitionKey, new AttributeValue(ns) },
+                { DynamoDB.DataStoreSortKey, new AttributeValue(key) }
             };
-        }
 
-        private QueryRequest MakeQueryForKind(IVersionedDataKind kind)
+        private QueryRequest MakeQueryForKind(DataKind kind)
         {
             Condition cond = new Condition()
             {
@@ -218,7 +242,7 @@ namespace LaunchDarkly.Client.DynamoDB
             {
                 KeyConditions = new Dictionary<string, Condition>()
                 {
-                    { Constants.PartitionKey, cond }
+                    { DynamoDB.DataStorePartitionKey, cond }
                 },
                 ConsistentRead = true
             };
@@ -230,7 +254,7 @@ namespace LaunchDarkly.Client.DynamoDB
             return _client.GetItemAsync(req);
         }
 
-        private async Task<HashSet<Tuple<string, string>>> ReadExistingKeys(ICollection<IVersionedDataKind> kinds)
+        private async Task<HashSet<Tuple<string, string>>> ReadExistingKeys(IEnumerable<DataKind> kinds)
         {
             var keys = new HashSet<Tuple<string, string>>();
             foreach (var kind in kinds)
@@ -239,38 +263,49 @@ namespace LaunchDarkly.Client.DynamoDB
                 req.ProjectionExpression = "#namespace, #key";
                 req.ExpressionAttributeNames = new Dictionary<string, string>()
                 {
-                    { "#namespace", Constants.PartitionKey },
-                    { "#key", Constants.SortKey }
+                    { "#namespace", DynamoDB.DataStorePartitionKey },
+                    { "#key", DynamoDB.DataStoreSortKey }
                 };
                 await DynamoDBHelpers.IterateQuery(_client, req,
                     item => keys.Add(new Tuple<string, string>(
-                        item[Constants.PartitionKey].S,
-                        item[Constants.SortKey].S))
+                        item[DynamoDB.DataStorePartitionKey].S,
+                        item[DynamoDB.DataStoreSortKey].S))
                     );
             }
             return keys;
         }
 
-        private Dictionary<string, AttributeValue> MarshalItem(IVersionedDataKind kind, IVersionedData item)
+        private Dictionary<string, AttributeValue> MarshalItem(DataKind kind, string key, SerializedItemDescriptor item)
         {
-            var json = FeatureStoreHelpers.MarshalJson(item);
-            var ret = MakeKeysMap(NamespaceForKind(kind), item.Key);
+            var ret = MakeKeysMap(NamespaceForKind(kind), key);
             ret[VersionAttribute] = new AttributeValue() { N = item.Version.ToString() };
-            ret[ItemJsonAttribute] = new AttributeValue(json);
+            ret[SerializedItemAttribute] = new AttributeValue(item.Deleted ? DeletedItemPlaceholder : item.SerializedItem);
             return ret;
         }
 
-        private IVersionedData UnmarshalItem(IVersionedDataKind kind, IDictionary<string, AttributeValue> item)
+        private SerializedItemDescriptor? UnmarshalItem(DataKind kind, IDictionary<string, AttributeValue> item)
         {
-            if (item == null || item.Count == 0)
+            if (item is null || item.Count == 0)
             {
                 return null;
             }
-            if (item.TryGetValue(ItemJsonAttribute, out var jsonAttr) && jsonAttr.S != null)
+            if (!item.TryGetValue(SerializedItemAttribute, out var serializedItemAttr) || serializedItemAttr.S is null)
             {
-                return FeatureStoreHelpers.UnmarshalJson(kind, jsonAttr.S);
+                throw new InvalidOperationException("Invalid data in DynamoDB: missing item attribute");
             }
-            throw new InvalidOperationException("DynamoDB map did not contain expected item string");
+            if (!item.TryGetValue(VersionAttribute, out var versionAttr) || versionAttr.N is null)
+            {
+                throw new InvalidOperationException("Invalid data in DynamoDB: missing version attribute");
+            }
+            if (!int.TryParse(versionAttr.N, out var version))
+            {
+                throw new InvalidOperationException("Invalid data in DynamoDB: non-numeric version");
+            }
+            if (serializedItemAttr.S == DeletedItemPlaceholder)
+            {
+                return new SerializedItemDescriptor(version, true, null);
+            }
+            return new SerializedItemDescriptor(version, false, serializedItemAttr.S);
         }
     }
 }

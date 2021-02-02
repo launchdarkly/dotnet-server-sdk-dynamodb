@@ -18,6 +18,8 @@ This project has multiple target frameworks as described in [`README.md`](./READ
 
 The project has a package dependency on `AWSSDK.DynamoDBv2`. The dependency version is intended to be the _minimum_ compatible version; applications are expected to override this with their own dependency on some higher version.
  
+The unit test project uses code from the `dotnet-server-sdk-shared-tests` repository which is imported as a subtree. See the `README.md` file in that directory for more information.
+
 ### Building
  
 To install all required packages:
@@ -56,6 +58,6 @@ dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f netcoreapp2.1
 
 The tests expect you to have a local DynamoDB instance running on port 8000. One way to do this is with Docker:
 
-```
+```bash
 docker run -p 8000:8000 amazon/dynamodb-local
 ```

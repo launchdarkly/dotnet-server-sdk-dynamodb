@@ -11,8 +11,10 @@ circleci:
 template:
   name: dotnet-windows
   skip:
-    - test  # tests require DynamoDB - run them only in CI
+    - test
+  env:
+    LD_RELEASE_DOCS_TARGET_FRAMEWORK: netstandard2.0
 
 documentation:
-  title: LaunchDarkly SDK DynamoDB Integration
+  title: LaunchDarkly Server-Side .NET SDK DynamoDB Integration
   githubPages: true
