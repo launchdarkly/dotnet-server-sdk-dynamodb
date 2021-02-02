@@ -447,7 +447,7 @@ namespace LaunchDarkly.Sdk.Server.SharedTests.DataStore
                 // delete the flag so it becomes unknown
                 dataSourceUpdates.Upsert(DataModel.Features, FlagTestData.FlagKey, ItemDescriptor.Deleted(3));
                 var detail = client.JsonVariationDetail(FlagTestData.FlagKey, FlagTestData.MainUser, LdValue.Null);
-                Assert.Equal(EvaluationReason.ErrorReason(EvaluationErrorKind.FLAG_NOT_FOUND), detail.Reason);
+                Assert.Equal(EvaluationReason.ErrorReason(EvaluationErrorKind.FlagNotFound), detail.Reason);
             }
         }
 
@@ -550,7 +550,6 @@ namespace LaunchDarkly.Sdk.Server.SharedTests.DataStore
             {
                 Assert.Equal(item.SerializedItemDescriptor.SerializedItem, serializedItemDesc.Value.SerializedItem);
             }
-
         }
 
         private static void AssertSerializedItemsCollection(KeyedItems<SerializedItemDescriptor> serializedItems, params TestEntity[] expectedItems)
@@ -597,7 +596,7 @@ namespace LaunchDarkly.Sdk.Server.SharedTests.DataStore
 
             public void Dispose() { }
 
-            public bool Initialized() => true;
+            public bool Initialized => true;
 
             public Task<bool> Start()
             {
