@@ -39,5 +39,5 @@ jobs:
           command: java -D"java.library.path=./dynamodb-local/DynamoDBLocal_lib" -jar ./dynamodb-local/DynamoDBLocal.jar -sharedDb
           background: true
       - run: dotnet restore
-      - run: dotnet build src/LaunchDarkly.ServerSdk.DynamoDB -f net45
+      - run: dotnet build src/LaunchDarkly.ServerSdk.DynamoDB -f net452
       - run: dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f net452
