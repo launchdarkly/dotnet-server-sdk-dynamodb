@@ -1,5 +1,6 @@
 # LaunchDarkly Server-Side SDK for .NET - DynamoDB integration
 
+[![NuGet](https://img.shields.io/nuget/v/LaunchDarkly.ServerSdk.DynamoDB.svg?style=flat-square)](https://www.nuget.org/packages/LaunchDarkly.ServerSdk.DynamoDB/)
 [![CircleCI](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb.svg?style=svg)](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb)
 [![Documentation](https://img.shields.io/static/v1?label=GitHub+Pages&message=API+reference&color=00add8)](https://launchdarkly.github.io/dotnet-server-sdk-dynamodb)
 
