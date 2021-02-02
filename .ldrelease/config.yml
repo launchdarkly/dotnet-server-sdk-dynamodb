@@ -1,4 +1,3 @@
-
 publications:
   - url: https://nuget.org/packages/LaunchDarkly.ServerSdk.DynamoDB
     description: NuGet
@@ -6,6 +5,8 @@ publications:
 circleci:
   windows:
     context: org-global
+    env:
+      LD_RELEASE_DOCS_TARGET_FRAMEWORK: net45
 
 template:
   name: dotnet-windows

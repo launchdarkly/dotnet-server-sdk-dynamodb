@@ -1,6 +1,8 @@
 # LaunchDarkly Server-Side SDK for .NET - DynamoDB integration
 
-[![CircleCI](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb.svg?style=svg)](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb)
+[![NuGet](https://img.shields.io/nuget/v/LaunchDarkly.ServerSdk.DynamoDB.svg?style=flat-square)](https://www.nuget.org/packages/LaunchDarkly.ServerSdk.DynamoDB/)
+[![CircleCI](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb.svg?style=shield)](https://circleci.com/gh/launchdarkly/dotnet-server-sdk-dynamodb)
+[![Documentation](https://img.shields.io/static/v1?label=GitHub+Pages&message=API+reference&color=00add8)](https://launchdarkly.github.io/dotnet-server-sdk-dynamodb)
 
 This library provides a DynamoDB-backed persistence mechanism (data store) for the [LaunchDarkly server-side .NET SDK](https://github.com/launchdarkly/dotnet-server-sdk), replacing the default in-memory data store. It uses the [AWS SDK for .NET](https://aws.amazon.com/sdk-for-net/).
 
@@ -31,6 +33,7 @@ The .NET build tools should automatically load the most appropriate build of the
 
 4. When configuring your `LdClient`, add the DynamoDB data store as a `PersistentDataStore`. You may specify any custom DynamoDB options using the methods of `DynamoDBDataStoreBuilder`. For instance, if you are passing in your AWS credentials programmatically from a variable called `myCredentials`:
 
+```csharp
         var ldConfig = Configuration.Default("YOUR_SDK_KEY")
             .DataStore(
                 Components.PersistentDataStore(
@@ -39,11 +42,13 @@ The .NET build tools should automatically load the most appropriate build of the
             )
             .Build();
         var ldClient = new LdClient(ldConfig);
+```
 
 ## Caching behavior
 
 The LaunchDarkly SDK has a standard caching mechanism for any persistent data store, to reduce database traffic. This is configured through the SDK's `PersistentDataStoreBuilder` class as described in the SDK documentation. For instance, to specify a cache TTL of 5 minutes:
 
+```csharp
         var config = Configuration.Default("YOUR_SDK_KEY")
             .DataStore(
                 Components.PersistentDataStore(
@@ -51,28 +56,15 @@ The LaunchDarkly SDK has a standard caching mechanism for any persistent data st
                 ).CacheTime(TimeSpan.FromMinutes(5))
             )
             .Build();
-
-## How the SDK uses DynamoDB
-
-The DynamoDB integrations for all LaunchDarkly server-side SDKs use the same conventions, so that SDK instances and Relay Proxy instances sharing a single DynamoDB table can interoperate correctly. The storage schema is as follows:
-
-* For each data item that the SDK can store, such as a feature flag, there is a single DynamoDB data item, with the following attributes:
-    * `namespace`: a string value that denotes the type of data. Currently, the types are `features` and `segments`, but this is subject to change in the future. If you have specified a prefix string, then the `namespace` key is set to `PREFIX:features` or `PREFIX:segments` instead (where `PREFIX` is your configured prefix).
-    * `key`: the unique key of the item (such as the flag key for a feature flag).
-    * `version`: a number that the SDK uses to keep track of updates.
-    * `item`: a serialized representation of the data item, in a format that is determined by the SDK.
-
-* An additional item with a `namespace` of `$inited` (or `PREFIX:$inited`) is created when the SDK has stored a full set of feature flag data. This allows a new SDK instance to check whether there is already a valid data set that was stored earlier.
-
-* The SDK will never add, modify, or remove any items in the DynamoDB table other than the ones described above, so it is safe to share a DynamoDB table that is also being used for other purposes.
+```
 
 ## Signing
 
-The published version of this assembly is strong-named. Building the code locally in the default Debug configuration does not use strong-naming and does not require a key file.
+The published version of this assembly is digitally signed with Authenticode and [strong-named](https://docs.microsoft.com/en-us/dotnet/framework/app-domains/strong-named-assemblies). Building the code locally in the default Debug configuration does not use strong-naming and does not require a key file.
 
 ## Contributing
 
-See [Contributing](./CONTRIBUTING.md).
+We encourage pull requests and other contributions from the community. Check out our [contributing guidelines](CONTRIBUTING.md) for instructions on how to contribute to this project.
 
 ## About LaunchDarkly
  
