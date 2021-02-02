@@ -3,7 +3,7 @@
     <Version>2.0.0-alpha.1</Version>
     <PackageId>LaunchDarkly.ServerSdk.SharedTests</PackageId>
     <AssemblyName>LaunchDarkly.ServerSdk.SharedTests</AssemblyName>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
     <OutputType>Library</OutputType>
     <Description>LaunchDarkly .NET Shared Tests</Description>
     <Company>LaunchDarkly</Company>
