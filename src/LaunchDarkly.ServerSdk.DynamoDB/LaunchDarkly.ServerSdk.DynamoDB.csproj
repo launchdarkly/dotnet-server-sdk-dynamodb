@@ -11,7 +11,7 @@
     <Authors>LaunchDarkly</Authors>
     <Owners>LaunchDarkly</Owners>
     <Copyright>Copyright 2018 Catamorphic, Co.</Copyright>
-    <LicenseExpression>Apache-2.0</LicenseExpression>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/launchdarkly/dotnet-server-sdk-dynamodb</PackageProjectUrl>
     <RepositoryUrl>https://github.com/launchdarkly/dotnet-server-sdk-dynamodb</RepositoryUrl>
     <RepositoryBranch>master</RepositoryBranch>
