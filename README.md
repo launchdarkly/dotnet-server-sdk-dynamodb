@@ -10,6 +10,8 @@ For more information, see also: [Using a persistent data store](https://docs.lau
 
 Version 2.0.0 and above of this library works with version 6.0.0 and above of the LaunchDarkly .NET SDK. For earlier versions of the SDK, use the latest 1.x release of this library.
 
+For full usage details and examples, see the [API reference](launchdarkly.github.io/dotnet-server-sdk-dynamodb).
+
 ## .NET platform compatibility
 
 This version of the library is built for the following targets:
@@ -18,45 +20,6 @@ This version of the library is built for the following targets:
 * .NET Standard 2.0: runs on .NET Core 2.x and 3.x, or .NET 5, in an application; or within a library that is targeted to .NET Standard 2.x or .NET 5.
 
 The .NET build tools should automatically load the most appropriate build of the library for whatever platform your application or library is targeted to.
-
-## Quick setup
-
-1. In DynamoDB, create a table which has the following schema: a partition key called "namespace" and a sort key called "key", both with a string type. The LaunchDarkly library does not create the table automatically, because it has no way of knowing what additional properties (such as permissions and throughput) you would want it to have.
-
-2. Use [NuGet](http://docs.nuget.org/docs/start-here/using-the-package-manager-console) to add this package to your project:
-
-        Install-Package LaunchDarkly.ServerSdk.DynamoDB
-
-3. Import the package (note that the namespace is different from the package name):
-
-        using LaunchDarkly.Sdk.Server.Integrations;
-
-4. When configuring your `LdClient`, add the DynamoDB data store as a `PersistentDataStore`. You may specify any custom DynamoDB options using the methods of `DynamoDBDataStoreBuilder`. For instance, if you are passing in your AWS credentials programmatically from a variable called `myCredentials`:
-
-```csharp
-        var ldConfig = Configuration.Default("YOUR_SDK_KEY")
-            .DataStore(
-                Components.PersistentDataStore(
-                    DynamoDB.DataStore("my-table-name").Credentials(myCredentials)
-                )
-            )
-            .Build();
-        var ldClient = new LdClient(ldConfig);
-```
-
-## Caching behavior
-
-The LaunchDarkly SDK has a standard caching mechanism for any persistent data store, to reduce database traffic. This is configured through the SDK's `PersistentDataStoreBuilder` class as described in the SDK documentation. For instance, to specify a cache TTL of 5 minutes:
-
-```csharp
-        var config = Configuration.Default("YOUR_SDK_KEY")
-            .DataStore(
-                Components.PersistentDataStore(
-                    DynamoDB.DataStore("my-table-name").Credentials(myCredentials)
-                ).CacheTime(TimeSpan.FromMinutes(5))
-            )
-            .Build();
-```
 
 ## Signing
 
