@@ -9,19 +9,43 @@ namespace LaunchDarkly.Sdk.Server.Integrations
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Obtain an instance of this class by calling <see cref="DynamoDB.DataStore(string)"/>. After calling its methods
-    /// to specify any desired custom settings, wrap it in a <see cref="PersistentDataStoreBuilder"/>
-    /// by calling <see cref="Components.PersistentDataStore(IPersistentDataStoreAsyncFactory)"/>, then pass
-    /// the result into the SDK configuration with <see cref="ConfigurationBuilder.DataStore(IDataStoreFactory)"/>.
-    /// You do not need to call <see cref="CreatePersistentDataStore(LdClientContext)"/> yourself to build
-    /// the actual data store; that will be done by the SDK.
+    /// This can be used either for the main data store that holds feature flag data, or for the big
+    /// segment store, or both. If you are using both, they do not have to have the same parameters. For
+    /// instance, in this example the main data store uses a table called "table1" and the big segment
+    /// store uses a table called "table2":
     /// </para>
+    /// <code>
+    ///     var config = Configuration.Builder("sdk-key")
+    ///         .DataStore(
+    ///             Components.PersistentDataStore(
+    ///                 DynamoDB.DataStore("table1")
+    ///             )
+    ///         )
+    ///         .BigSegments(
+    ///             Components.BigSegments(
+    ///                 DynamoDB.DataStore("table2")
+    ///             )
+    ///         )
+    ///         .Build();
+    /// </code>
     /// <para>
-    /// The AWS SDK provides many configuration options for a DynamoDB client. This class has
-    /// corresponding methods for some of the most commonly used ones. If you need more sophisticated
-    /// control over the DynamoDB client, you can construct one of your own and pass it in with the
-    /// <see cref="ExistingClient(AmazonDynamoDBClient)"/> method.
+    /// Note that the builder is passed to one of two methods,
+    /// <see cref="Components.PersistentDataStore(Interfaces.IPersistentDataStoreAsyncFactory)"/> or
+    /// <see cref="Components.BigSegments(Interfaces.IBigSegmentStoreFactory)"/>, depending on the context in
+    /// which it is being used. This is because each of those contexts has its own additional
+    /// configuration options that are unrelated to the DynamoDB options. For instance, the
+    /// <see cref="Components.PersistentDataStore(IPersistentDataStoreAsyncFactory)"/> builder
+    /// has options for caching:
     /// </para>
+    /// <code>
+    ///     var config = Configuration.Builder("sdk-key")
+    ///         .DataStore(
+    ///             Components.PersistentDataStore(
+    ///                 DynamoDB.DataStore("table1")
+    ///             ).CacheSeconds(15)
+    ///         )
+    ///         .Build();
+    /// </code>
     /// <para>
     /// Builder calls can be chained, for example:
     /// </para>
@@ -38,7 +62,7 @@ namespace LaunchDarkly.Sdk.Server.Integrations
     ///         .Build();
     /// </code>
     /// </remarks>
-    public sealed class DynamoDBDataStoreBuilder : IPersistentDataStoreAsyncFactory
+    public sealed class DynamoDBDataStoreBuilder : IPersistentDataStoreAsyncFactory, IBigSegmentStoreFactory
     {
         private AmazonDynamoDBClient _existingClient = null;
         private AWSCredentials _credentials = null;
@@ -132,6 +156,16 @@ namespace LaunchDarkly.Sdk.Server.Integrations
                 _tableName,
                 _prefix,
                 context.Basic.Logger.SubLogger("DataStore.DynamoDB")
+                );
+
+        /// <inheritdoc/>
+        public IBigSegmentStore CreateBigSegmentStore(LdClientContext context) =>
+            new DynamoDBBigSegmentStoreImpl(
+                MakeClient(),
+                _existingClient != null,
+                _tableName,
+                _prefix,
+                context.Basic.Logger.SubLogger("BigSegments.DynamoDB")
                 );
 
         private AmazonDynamoDBClient MakeClient()
