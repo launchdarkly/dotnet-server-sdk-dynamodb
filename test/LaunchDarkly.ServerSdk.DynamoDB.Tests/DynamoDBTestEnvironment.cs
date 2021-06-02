@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
@@ -11,6 +12,7 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         public const string TableName = "test-dynamodb-table";
 
         private static bool TableCreated;
+        private static SemaphoreSlim _tableLock = new SemaphoreSlim(1, 1);
 
         public static AWSCredentials MakeTestCredentials() =>
             new BasicAWSCredentials("key", "secret"); // not used, but required
@@ -23,41 +25,48 @@ namespace LaunchDarkly.Sdk.Server.Integrations
 
         public static async Task CreateTableIfNecessary()
         {
-            if (TableCreated)
+            await _tableLock.WaitAsync();
+            try
             {
-                return;
-            }
+                if (TableCreated)
+                {
+                    return;
+                }
 
-            using (var client = CreateTestClient())
+                using (var client = CreateTestClient())
+                {
+                    try
+                    {
+                        await client.DescribeTableAsync(new DescribeTableRequest(TableName));
+                        return; // table exists
+                    }
+                    catch (ResourceNotFoundException)
+                    {
+                        // fall through to code below - we'll create the table
+                    }
+                    var request = new CreateTableRequest()
+                    {
+                        TableName = TableName,
+                        KeySchema = new List<KeySchemaElement>()
+                        {
+                            new KeySchemaElement(DynamoDB.DataStorePartitionKey, KeyType.HASH),
+                            new KeySchemaElement(DynamoDB.DataStoreSortKey, KeyType.RANGE)
+                        },
+                        AttributeDefinitions = new List<AttributeDefinition>()
+                        {
+                            new AttributeDefinition(DynamoDB.DataStorePartitionKey, ScalarAttributeType.S),
+                            new AttributeDefinition(DynamoDB.DataStoreSortKey, ScalarAttributeType.S)
+                        },
+                        ProvisionedThroughput = new ProvisionedThroughput(1, 1)
+                    };
+                    await client.CreateTableAsync(request);
+                }
+            }
+            finally
             {
-                try
-                {
-                    await client.DescribeTableAsync(new DescribeTableRequest(TableName));
-                    return; // table exists
-                }
-                catch (ResourceNotFoundException)
-                {
-                    // fall through to code below - we'll create the table
-                }
-                var request = new CreateTableRequest()
-                {
-                    TableName = TableName,
-                    KeySchema = new List<KeySchemaElement>()
-                    {
-                        new KeySchemaElement(DynamoDB.DataStorePartitionKey, KeyType.HASH),
-                        new KeySchemaElement(DynamoDB.DataStoreSortKey, KeyType.RANGE)
-                    },
-                    AttributeDefinitions = new List<AttributeDefinition>()
-                    {
-                        new AttributeDefinition(DynamoDB.DataStorePartitionKey, ScalarAttributeType.S),
-                        new AttributeDefinition(DynamoDB.DataStoreSortKey, ScalarAttributeType.S)
-                    },
-                    ProvisionedThroughput = new ProvisionedThroughput(1, 1)
-                };
-                await client.CreateTableAsync(request);
+                TableCreated = true;
+                _tableLock.Release();
             }
-
-            TableCreated = true;
         }
 
         public static async Task ClearAllData(string prefix)
