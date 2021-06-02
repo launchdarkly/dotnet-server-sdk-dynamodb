@@ -21,22 +21,45 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         /// <summary>
         /// Returns a builder object for creating a DynamoDB-backed data store.
         /// </summary>
-        /// <remarks>
-        /// This object can be modified with <see cref="DynamoDBDataStoreBuilder"/> methods for any desired
-        /// custom DynamoDB options. Then, pass it to <see cref="Components.PersistentDataStore(Interfaces.IPersistentDataStoreAsyncFactory)"/>
-        /// and set any desired caching options. Finally, pass the result to <see cref="ConfigurationBuilder.DataStore(Interfaces.IDataStoreFactory)"/>.
-        /// </remarks>
-        /// <example>
+        /// <para>
+        /// This can be used either for the main data store that holds feature flag data, or for the big
+        /// segment store, or both. If you are using both, they do not have to have the same parameters. For
+        /// instance, in this example the main data store uses a table called "table1" and the big segment
+        /// store uses a table called "table2":
+        /// </para>
         /// <code>
         ///     var config = Configuration.Builder("sdk-key")
         ///         .DataStore(
         ///             Components.PersistentDataStore(
-        ///                 DynamoDB.DataStore("table-name")
+        ///                 DynamoDB.DataStore("table1")
+        ///             )
+        ///         )
+        ///         .BigSegments(
+        ///             Components.BigSegments(
+        ///                 DynamoDB.DataStore("table2")
+        ///             )
+        ///         )
+        ///         .Build();
+        /// </code>
+        /// <para>
+        /// Note that the builder is passed to one of two methods,
+        /// <see cref="Components.PersistentDataStore(Interfaces.IPersistentDataStoreAsyncFactory)"/> or
+        /// <see cref="Components.BigSegments(Interfaces.IBigSegmentStoreFactory)"/>, depending on the context in
+        /// which it is being used. This is because each of those contexts has its own additional
+        /// configuration options that are unrelated to the DynamoDB options. For instance, the
+        /// <see cref="Components.PersistentDataStore(IPersistentDataStoreAsyncFactory)"/> builder
+        /// has options for caching:
+        /// </para>
+        /// <code>
+        ///     var config = Configuration.Builder("sdk-key")
+        ///         .DataStore(
+        ///             Components.PersistentDataStore(
+        ///                 DynamoDB.DataStore("table1")
         ///             ).CacheSeconds(15)
         ///         )
         ///         .Build();
         /// </code>
-        /// </example>
+        /// </remarks>
         /// <param name="tableName">the DynamoDB table name; this table must already exist</param>
         /// <returns>a data store configuration object</returns>
         public static DynamoDBDataStoreBuilder DataStore(string tableName) =>

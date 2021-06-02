@@ -44,18 +44,12 @@ namespace LaunchDarkly.Sdk.Server.Integrations
     /// * DynamoDB has a maximum item size of 400KB. Since each feature flag or user segment is
     /// stored as a single item, this mechanism will not work for extremely large flags or segments.
     /// </summary>
-    internal sealed class DynamoDBDataStoreImpl : IPersistentDataStoreAsync
+    internal sealed class DynamoDBDataStoreImpl : DynamoDBStoreImplBase, IPersistentDataStoreAsync
     {
         // These attribute names aren't public because application code should never access them directly
         private const string VersionAttribute = "version";
         private const string SerializedItemAttribute = "item";
         private const string DeletedItemPlaceholder = "null"; // DynamoDB does not allow empty strings
-
-        private readonly AmazonDynamoDBClient _client;
-        private readonly bool _wasExistingClient;
-        private readonly string _tableName;
-        private readonly string _prefix;
-        private readonly Logger _log;
 
         internal DynamoDBDataStoreImpl(
             AmazonDynamoDBClient client,
@@ -63,25 +57,8 @@ namespace LaunchDarkly.Sdk.Server.Integrations
             string tableName,
             string prefix,
             Logger log
-            )
-        {
-            _client = client;
-            _wasExistingClient = wasExistingClient;
-            _tableName = tableName;
-            _log = log;
-
-            if (string.IsNullOrEmpty(prefix))
-            {
-                _prefix = null;
-                _log.Info("Using DynamoDB data store with table name \"{0}\" and no prefix", tableName);
-            }
-            else
-            {
-                _log.Info("Using DynamoDB data store with table name \"{0}\" and prefix \"{1}\"",
-                    tableName, prefix);
-                _prefix = prefix;
-            }
-        }
+            ) : base(client, wasExistingClient, tableName, prefix, log)
+        { }
         
         public async Task<bool> InitializedAsync()
         {
@@ -196,37 +173,10 @@ namespace LaunchDarkly.Sdk.Server.Integrations
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_wasExistingClient)
-                {
-                    _client.Dispose();
-                }
-            }
-        }
-
-        private string PrefixedNamespace(string baseStr) =>
-            _prefix is null ? baseStr : (_prefix + ":" + baseStr);
-
         private string NamespaceForKind(DataKind kind) =>
             PrefixedNamespace(kind.Name);
 
         private string InitedKey => PrefixedNamespace("$inited");
-
-        private Dictionary<string, AttributeValue> MakeKeysMap(string ns, string key) =>
-            new Dictionary<string, AttributeValue>()
-            {
-                { DynamoDB.DataStorePartitionKey, new AttributeValue(ns) },
-                { DynamoDB.DataStoreSortKey, new AttributeValue(key) }
-            };
 
         private QueryRequest MakeQueryForKind(DataKind kind)
         {
