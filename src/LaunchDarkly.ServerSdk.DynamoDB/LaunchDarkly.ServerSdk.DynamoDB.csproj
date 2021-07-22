@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="[3.3.15.2,]" />
-    <PackageReference Include="LaunchDarkly.ServerSdk" Version="6.1.0-alpha.bigsegments.2" />
+    <PackageReference Include="LaunchDarkly.ServerSdk" Version="6.2.0-alpha.bigsegments.1" />
   </ItemGroup>
 
   <PropertyGroup>
