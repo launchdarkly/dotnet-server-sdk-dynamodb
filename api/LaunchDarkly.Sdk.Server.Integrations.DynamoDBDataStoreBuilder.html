@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class DynamoDBDataStoreBuilder
    ">
-    <meta name="generator" content="docfx 2.57.2.0">
+    <meta name="generator" content="docfx 2.58.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -84,6 +84,7 @@
   <div classs="implements">
     <h5>Implements</h5>
     <div><span class="xref">LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory</span></div>
+    <div><span class="xref">LaunchDarkly.Sdk.Server.Interfaces.IBigSegmentStoreFactory</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -113,24 +114,44 @@
   <h6><strong>Assembly</strong>: LaunchDarkly.ServerSdk.DynamoDB.dll</h6>
   <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class DynamoDBDataStoreBuilder : IPersistentDataStoreAsyncFactory</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class DynamoDBDataStoreBuilder : IPersistentDataStoreAsyncFactory, IBigSegmentStoreFactory</code></pre>
   </div>
   <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_remarks"><strong>Remarks</strong></h5>
   <div class="markdown level0 remarks"><p><p>
-Obtain an instance of this class by calling <a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDB.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDB_DataStore_System_String_">DataStore(String)</a>. After calling its methods
-to specify any desired custom settings, wrap it in a <span class="xref">LaunchDarkly.Sdk.Server.Integrations.PersistentDataStoreBuilder</span>
-by calling <span class="xref">LaunchDarkly.Sdk.Server.Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory)</span>, then pass
-the result into the SDK configuration with <span class="xref">LaunchDarkly.Sdk.Server.ConfigurationBuilder.DataStore(LaunchDarkly.Sdk.Server.Interfaces.IDataStoreFactory)</span>.
-You do not need to call <a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreatePersistentDataStore_LaunchDarkly_Sdk_Server_Interfaces_LdClientContext_">CreatePersistentDataStore(LdClientContext)</a> yourself to build
-the actual data store; that will be done by the SDK.
-</p>
-<p>
-The AWS SDK provides many configuration options for a DynamoDB client. This class has
-corresponding methods for some of the most commonly used ones. If you need more sophisticated
-control over the DynamoDB client, you can construct one of your own and pass it in with the
-<a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_ExistingClient_Amazon_DynamoDBv2_AmazonDynamoDBClient_">ExistingClient(AmazonDynamoDBClient)</a> method.
-</p>
-<p>
+This can be used either for the main data store that holds feature flag data, or for the big
+segment store, or both. If you are using both, they do not have to have the same parameters. For
+instance, in this example the main data store uses a table called &quot;table1&quot; and the big segment
+store uses a table called &quot;table2&quot;:
+</p></p>
+<pre><code>    var config = Configuration.Builder(&quot;sdk-key&quot;)
+        .DataStore(
+            Components.PersistentDataStore(
+                DynamoDB.DataStore(&quot;table1&quot;)
+            )
+        )
+        .BigSegments(
+            Components.BigSegments(
+                DynamoDB.DataStore(&quot;table2&quot;)
+            )
+        )
+        .Build();</code></pre>
+<p><p>
+Note that the builder is passed to one of two methods,
+<span class="xref">LaunchDarkly.Sdk.Server.Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory)</span> or
+<span class="xref">LaunchDarkly.Sdk.Server.Components.BigSegments(LaunchDarkly.Sdk.Server.Interfaces.IBigSegmentStoreFactory)</span>, depending on the context in
+which it is being used. This is because each of those contexts has its own additional
+configuration options that are unrelated to the DynamoDB options. For instance, the
+<span class="xref">LaunchDarkly.Sdk.Server.Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory)</span> builder
+has options for caching:
+</p></p>
+<pre><code>    var config = Configuration.Builder(&quot;sdk-key&quot;)
+        .DataStore(
+            Components.PersistentDataStore(
+                DynamoDB.DataStore(&quot;table1&quot;)
+            ).CacheSeconds(15)
+        )
+        .Build();</code></pre>
+<p><p>
 Builder calls can be chained, for example:
 </p></p>
 <pre><code>    var config = Configuration.Builder(&quot;sdk-key&quot;)
@@ -193,6 +214,46 @@ Builder calls can be chained, for example:
   <div class="markdown level1 remarks"><p>If this is not provided explicitly, the AWS SDK will attempt to determine your
 current region based on environment variables and/or local configuration files.</p>
 </div>
+  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreateBigSegmentStore_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreateBigSegmentStore*"></a>
+  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreateBigSegmentStore_LaunchDarkly_Sdk_Server_Interfaces_LdClientContext_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreateBigSegmentStore(LaunchDarkly.Sdk.Server.Interfaces.LdClientContext)">CreateBigSegmentStore(LdClientContext)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IBigSegmentStore CreateBigSegmentStore(LdClientContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">LaunchDarkly.Sdk.Server.Interfaces.LdClientContext</span></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">LaunchDarkly.Sdk.Server.Interfaces.IBigSegmentStore</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreatePersistentDataStore_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreatePersistentDataStore*"></a>
   <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreatePersistentDataStore_LaunchDarkly_Sdk_Server_Interfaces_LdClientContext_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreatePersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.LdClientContext)">CreatePersistentDataStore(LdClientContext)</h4>
   <div class="markdown level1 summary"></div>
@@ -389,6 +450,9 @@ applications, so by default there is no prefix.</p>
   <h3 id="implements">Implements</h3>
   <div>
       <span class="xref">LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory</span>
+  </div>
+  <div>
+      <span class="xref">LaunchDarkly.Sdk.Server.Interfaces.IBigSegmentStoreFactory</span>
   </div>
 </article>
           </div>
