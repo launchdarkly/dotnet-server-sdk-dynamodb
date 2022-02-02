@@ -50,7 +50,7 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         {
             if (disposing)
             {
-                if (_wasExistingClient)
+                if (!_wasExistingClient)
                 {
                     _client.Dispose();
                 }
