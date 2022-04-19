@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
@@ -51,6 +52,11 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         private const string SerializedItemAttribute = "item";
         private const string DeletedItemPlaceholder = "null"; // DynamoDB does not allow empty strings
 
+        // We won't try to store items whose total size exceeds this. The DynamoDB documentation says
+        // only "400KB", which probably means 400*1024, but to avoid any chance of trying to store a
+        // too-large item we are rounding it down.
+        const int DynamoDBMaxItemSize = 400000;
+
         internal DynamoDBDataStoreImpl(
             AmazonDynamoDBClient client,
             bool wasExistingClient,
@@ -81,6 +87,10 @@ namespace LaunchDarkly.Sdk.Server.Integrations
                 foreach (var keyAndItem in collection.Value.Items)
                 {
                     var encodedItem = MarshalItem(kind, keyAndItem.Key, keyAndItem.Value);
+                    if (!CheckSizeLimit(encodedItem))
+                    {
+                        continue;
+                    }
                     requests.Add(new WriteRequest(new PutRequest(encodedItem)));
 
                     var combinedKey = new Tuple<string, string>(NamespaceForKind(kind), keyAndItem.Key);
@@ -135,7 +145,11 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         public async Task<bool> UpsertAsync(DataKind kind, string key, SerializedItemDescriptor newItem)
         {
             var encodedItem = MarshalItem(kind, key, newItem);
-            
+            if (!CheckSizeLimit(encodedItem))
+            {
+                return false;
+            }
+
             try
             {
                 var request = new PutItemRequest(_tableName, encodedItem);
@@ -256,6 +270,29 @@ namespace LaunchDarkly.Sdk.Server.Integrations
                 return new SerializedItemDescriptor(version, true, null);
             }
             return new SerializedItemDescriptor(version, false, serializedItemAttr.S);
+        }
+
+        private bool CheckSizeLimit(Dictionary<string, AttributeValue> item) {
+            // see: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/CapacityUnitCalculations.html
+            var size = 100; // fixed overhead for index data
+            foreach (var kv in item)
+            {
+                size += Encoding.UTF8.GetByteCount(kv.Key);
+                if (kv.Value.S != null)
+                {
+                    size += Encoding.UTF8.GetByteCount(kv.Value.S);
+                } else if (kv.Value.N != null)
+                {
+                    size += Encoding.UTF8.GetByteCount(kv.Value.N);// DynamoDB stores numbers as numeric strings
+                }
+            }
+            if (size <= DynamoDBMaxItemSize)
+            {
+                return true;
+            }
+            _log.Error(@"The item ""{0}"" in ""{1}"" was too large to store in DynamoDB and was dropped",
+                item[DynamoDB.DataStorePartitionKey].S, item[DynamoDB.DataStoreSortKey].S);
+            return false;
         }
     }
 }
