@@ -1,6 +1,6 @@
 {
   "homepages": [],
-  "source_base_path": "C:/Users/circleci/AppData/Local/Temp/project-releaser-temp/build-docs",
+  "source_base_path": "/tmp/project-releaser/temp/build-docs",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/LaunchDarkly.Sdk.Server.Integrations.DynamoDB.html",
-          "hash": "lbI0gfNG4qTgGvjRBTne0omW3sAiucPa6jXjnMAMzSg="
+          "hash": "x0FM6WOs/nwH5/GPyL6ItbT2iHa18TnikZzGiMrRj9U="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html",
-          "hash": "YL67P78d8qtwt/x0QyTqPABNhURIa93FMnj5g/c0YmM="
+          "hash": "DCbNlwMv+4EHyf283Pfa7hsCOjeLNigj5a6an+aZMqI="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/LaunchDarkly.Sdk.Server.Integrations.html",
-          "hash": "uOaI0eLFfJeTrTPOeL/2CipwHW88OR4XVTBt9iLg4NU="
+          "hash": "Z/M31mG6dVvp3mOfUyzyH+zoYeoIsTaqFiKKX+l0z3k="
         }
       },
       "is_incremental": false,
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "DxHIHzvGI7FYPXQH2xx8zZ5WMDhivRyNBK/07x3Cn0E="
+          "hash": "wU9qEtx4vfsRpWPMww4r+lz9Defim3ux57TRVCZ+TS4="
         }
       },
       "is_incremental": false,
