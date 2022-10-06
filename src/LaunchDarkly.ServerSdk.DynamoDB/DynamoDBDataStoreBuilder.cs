@@ -1,6 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.Runtime;
-using LaunchDarkly.Sdk.Server.Interfaces;
+using LaunchDarkly.Sdk.Server.Subsystems;
 
 namespace LaunchDarkly.Sdk.Server.Integrations
 {
@@ -62,7 +62,8 @@ namespace LaunchDarkly.Sdk.Server.Integrations
     ///         .Build();
     /// </code>
     /// </remarks>
-    public sealed class DynamoDBDataStoreBuilder : IPersistentDataStoreAsyncFactory, IBigSegmentStoreFactory
+    public sealed class DynamoDBDataStoreBuilder : IComponentConfigurer<IPersistentDataStoreAsync>,
+        IComponentConfigurer<IBigSegmentStore>
     {
         private AmazonDynamoDBClient _existingClient = null;
         private AWSCredentials _credentials = null;
@@ -148,24 +149,28 @@ namespace LaunchDarkly.Sdk.Server.Integrations
             return this;
         }
 
+        // The Build methods are written as *explicit* interface implementations because this class is
+        // implementing IComponentConfigurer<T> with two different type parameters (since the same
+        // builder can be used to create either a regular persistent data store or a Big Segment store).
+
         /// <inheritdoc/>
-        public IPersistentDataStoreAsync CreatePersistentDataStore(LdClientContext context) =>
+        IPersistentDataStoreAsync IComponentConfigurer<IPersistentDataStoreAsync>.Build(LdClientContext context) =>
             new DynamoDBDataStoreImpl(
                 MakeClient(),
                 _existingClient != null,
                 _tableName,
                 _prefix,
-                context.Basic.Logger.SubLogger("DataStore.DynamoDB")
+                context.Logger.SubLogger("DataStore.DynamoDB")
                 );
 
         /// <inheritdoc/>
-        public IBigSegmentStore CreateBigSegmentStore(LdClientContext context) =>
+        IBigSegmentStore IComponentConfigurer<IBigSegmentStore>.Build(LdClientContext context) =>
             new DynamoDBBigSegmentStoreImpl(
                 MakeClient(),
                 _existingClient != null,
                 _tableName,
                 _prefix,
-                context.Basic.Logger.SubLogger("BigSegments.DynamoDB")
+                context.Logger.SubLogger("BigSegments.DynamoDB")
                 );
 
         private AmazonDynamoDBClient MakeClient()
