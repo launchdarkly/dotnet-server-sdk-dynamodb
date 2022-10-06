@@ -1,4 +1,5 @@
-﻿
+﻿using LaunchDarkly.Sdk.Server.Subsystems;
+
 namespace LaunchDarkly.Sdk.Server.Integrations
 {
     /// <summary>
@@ -44,11 +45,11 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         /// </code>
         /// <para>
         /// Note that the builder is passed to one of two methods,
-        /// <see cref="Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory)"/> or
-        /// <see cref="Components.BigSegments(LaunchDarkly.Sdk.Server.Interfaces.IBigSegmentStoreFactory)"/>, depending on the context in
+        /// <see cref="Components.PersistentDataStore(IComponentConfigurer{IPersistentDataStoreAsync})"/> or
+        /// <see cref="Components.BigSegments(IComponentConfigurer{IBigSegmentStore})"/>, depending on the context in
         /// which it is being used. This is because each of those contexts has its own additional
         /// configuration options that are unrelated to the DynamoDB options. For instance, the
-        /// <see cref="Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory)"/> builder
+        /// <see cref="Components.PersistentDataStore(IComponentConfigurer{IPersistentDataStore})"/> builder
         /// has options for caching:
         /// </para>
         /// <code>
