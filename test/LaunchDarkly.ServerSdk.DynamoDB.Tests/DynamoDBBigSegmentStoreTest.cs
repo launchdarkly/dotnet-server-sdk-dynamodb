@@ -30,7 +30,7 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         public Task DisposeAsync() => Task.CompletedTask;
 
         private IComponentConfigurer<IBigSegmentStore> MakeStoreFactory(string prefix) =>
-            DynamoDB.DataStore(TableName)
+            DynamoDB.BigSegmentStore(TableName)
                 .Credentials(MakeTestCredentials())
                 .Configuration(MakeTestConfiguration())
                 .Prefix(prefix);

@@ -34,7 +34,7 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         private IComponentConfigurer<IPersistentDataStoreAsync> MakeStoreFactory(string prefix) =>
             BaseBuilder().Prefix(prefix);
 
-        private DynamoDBDataStoreBuilder BaseBuilder() =>
+        private DynamoDBStoreBuilder<IPersistentDataStoreAsync> BaseBuilder() =>
             DynamoDB.DataStore(TableName)
                 .Credentials(MakeTestCredentials())
                 .Configuration(MakeTestConfiguration());
