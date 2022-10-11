@@ -1,4 +1,5 @@
-﻿
+﻿using LaunchDarkly.Sdk.Server.Subsystems;
+
 namespace LaunchDarkly.Sdk.Server.Integrations
 {
     /// <summary>
@@ -19,14 +20,18 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         public const string DataStoreSortKey = "key";
 
         /// <summary>
-        /// Returns a builder object for creating a DynamoDB-backed data store.
+        /// Returns a builder object for creating a Redis-backed persistent data store.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This can be used either for the main data store that holds feature flag data, or for the big
-        /// segment store, or both. If you are using both, they do not have to have the same parameters. For
-        /// instance, in this example the main data store uses a table called "table1" and the big segment
-        /// store uses a table called "table2":
+        /// This is for the main data store that holds feature flag data. To configure a
+        /// Big Segment store, use <see cref="BigSegmentStore"/> instead.
+        /// </para>
+        /// <para>
+        /// You can use methods of the builder to specify any non-default DynamoDB options
+        /// you may want, before passing the builder to
+        /// <see cref="Components.PersistentDataStore(IComponentConfigurer{IPersistentDataStoreAsync})"/>.
+        /// In this example, the store is configured to use a table called "table1":
         /// </para>
         /// <code>
         ///     var config = Configuration.Builder("sdk-key")
@@ -35,20 +40,12 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         ///                 DynamoDB.DataStore("table1")
         ///             )
         ///         )
-        ///         .BigSegments(
-        ///             Components.BigSegments(
-        ///                 DynamoDB.DataStore("table2")
-        ///             )
-        ///         )
         ///         .Build();
         /// </code>
         /// <para>
-        /// Note that the builder is passed to one of two methods,
-        /// <see cref="Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory)"/> or
-        /// <see cref="Components.BigSegments(LaunchDarkly.Sdk.Server.Interfaces.IBigSegmentStoreFactory)"/>, depending on the context in
-        /// which it is being used. This is because each of those contexts has its own additional
-        /// configuration options that are unrelated to the DynamoDB options. For instance, the
-        /// <see cref="Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory)"/> builder
+        /// Note that the SDK also has its own options related to data storage that are configured
+        /// at a different level, because they are independent of what database is being used. For
+        /// instance, the builder returned by <see cref="Components.PersistentDataStore(IComponentConfigurer{IPersistentDataStoreAsync})"/>
         /// has options for caching:
         /// </para>
         /// <code>
@@ -63,7 +60,47 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         /// </remarks>
         /// <param name="tableName">the DynamoDB table name; this table must already exist</param>
         /// <returns>a data store configuration object</returns>
-        public static DynamoDBDataStoreBuilder DataStore(string tableName) =>
-            new DynamoDBDataStoreBuilder(tableName);
+        public static DynamoDBStoreBuilder<IPersistentDataStoreAsync> DataStore(string tableName) =>
+            new BuilderForDataStore(tableName);
+
+        /// <summary>
+        /// Returns a builder object for creating a DynamoDB-backed Big Segment store.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// You can use methods of the builder to specify any non-default DynamoDB options
+        /// you may want, before passing the builder to
+        /// <see cref="Components.BigSegments(IComponentConfigurer{IBigSegmentStore})"/>.
+        /// In this example, the store is configured to use a table called "table2":
+        /// </para>
+        /// <code>
+        ///     var config = Configuration.Builder("sdk-key")
+        ///         .DataStore(
+        ///             Components.BigSegments(
+        ///                 DynamoDB.BigSegmentStore("table2")
+        ///             )
+        ///         )
+        ///         .Build();
+        /// </code>
+        /// <para>
+        /// Note that the SDK also has its own options related to Big Segments that are configured
+        /// at a different level, because they are independent of what database is being used. For
+        /// instance, the builder returned by <see cref="Components.BigSegments(IComponentConfigurer{IBigSegmentStore})"/>
+        /// has an option for the status polling interval:
+        /// </para>
+        /// <code>
+        ///     var config = Configuration.Builder("sdk-key")
+        ///         .DataStore(
+        ///             Components.BigSegments(
+        ///                 DynamoDB.BigSegmentStore("table2")
+        ///             ).StatusPollInterval(TimeSpan.FromSeconds(30))
+        ///         )
+        ///         .Build();
+        /// </code>
+        /// </remarks>
+        /// <param name="tableName">the DynamoDB table name; this table must already exist</param>
+        /// <returns>a Big Segment store configuration object</returns>
+        public static DynamoDBStoreBuilder<IBigSegmentStore> BigSegmentStore(string tableName) =>
+            new BuilderForBigSegments(tableName);
     }
 }

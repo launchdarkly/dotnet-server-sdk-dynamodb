@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Version>2.1.1</Version>
-    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
     <PackageId>LaunchDarkly.ServerSdk.DynamoDB</PackageId>
     <AssemblyName>LaunchDarkly.ServerSdk.DynamoDB</AssemblyName>
     <OutputType>Library</OutputType>
@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="[3.3.15.2,]" />
-    <PackageReference Include="LaunchDarkly.ServerSdk" Version="[6.2.0,7.0.0)" />
+    <PackageReference Include="LaunchDarkly.ServerSdk" Version="7.0.0-alpha.3" />
   </ItemGroup>
 
   <PropertyGroup>

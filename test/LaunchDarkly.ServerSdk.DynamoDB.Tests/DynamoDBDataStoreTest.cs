@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LaunchDarkly.Logging;
-using LaunchDarkly.Sdk.Server.Interfaces;
+using LaunchDarkly.Sdk.Server.Subsystems;
 using LaunchDarkly.Sdk.Server.SharedTests.DataStore;
 using Xunit;
 using Xunit.Abstractions;
 
 using static LaunchDarkly.Sdk.Server.Integrations.DynamoDBTestEnvironment;
-using static LaunchDarkly.Sdk.Server.Interfaces.DataStoreTypes;
+using static LaunchDarkly.Sdk.Server.Subsystems.DataStoreTypes;
 
 namespace LaunchDarkly.Sdk.Server.Integrations
 {
@@ -31,10 +31,10 @@ namespace LaunchDarkly.Sdk.Server.Integrations
 
         public Task DisposeAsync() => Task.CompletedTask;
 
-        private IPersistentDataStoreAsyncFactory MakeStoreFactory(string prefix) =>
+        private IComponentConfigurer<IPersistentDataStoreAsync> MakeStoreFactory(string prefix) =>
             BaseBuilder().Prefix(prefix);
 
-        private DynamoDBDataStoreBuilder BaseBuilder() =>
+        private DynamoDBStoreBuilder<IPersistentDataStoreAsync> BaseBuilder() =>
             DynamoDB.DataStore(TableName)
                 .Credentials(MakeTestCredentials())
                 .Configuration(MakeTestConfiguration());
@@ -44,9 +44,8 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         {
             var logCapture = Logs.Capture();
             var logger = logCapture.Logger("BaseLoggerName"); // in real life, the SDK will provide its own base log name
-            var context = new LdClientContext(new BasicConfiguration("", false, logger),
-                LaunchDarkly.Sdk.Server.Configuration.Default(""));
-            using (BaseBuilder().Prefix("my-prefix").CreatePersistentDataStore(context))
+            var context = new LdClientContext("", null, null, null, logger, false, null);
+            using (((IComponentConfigurer<IPersistentDataStoreAsync>)BaseBuilder().Prefix("my-prefix")).Build(context))
             {
                 Assert.Collection(logCapture.GetMessages(),
                     m =>
@@ -73,10 +72,9 @@ namespace LaunchDarkly.Sdk.Server.Integrations
                 dataKind, new KeyedItems<SerializedItemDescriptor>(items));
 
             var logCapture = Logs.Capture();
-            var context = new LdClientContext(new BasicConfiguration("sdk-key", false, logCapture.Logger("")),
-                LaunchDarkly.Sdk.Server.Configuration.Default("sdk-key"));
+            var context = new LdClientContext("", null, null, null, logCapture.Logger(""), false, null);
 
-            using (var store = BaseBuilder().CreatePersistentDataStore(context))
+            using (var store = ((IComponentConfigurer<IPersistentDataStoreAsync>)BaseBuilder()).Build(context))
             {
                 await store.InitAsync(new FullDataSet<SerializedItemDescriptor>(dataPlusBadItem));
 
@@ -96,10 +94,9 @@ namespace LaunchDarkly.Sdk.Server.Integrations
             GetTooLargeItemParams(flagOrSegment, out var dataKind, out var collIndex, out SerializedItemDescriptor item);
 
             var logCapture = Logs.Capture();
-            var context = new LdClientContext(new BasicConfiguration("sdk-key", false, logCapture.Logger("")),
-                LaunchDarkly.Sdk.Server.Configuration.Default("sdk-key"));
+            var context = new LdClientContext("", null, null, null, logCapture.Logger(""), false, null);
 
-            using (var store = BaseBuilder().CreatePersistentDataStore(context))
+            using (var store = ((IComponentConfigurer<IPersistentDataStoreAsync>)BaseBuilder()).Build(context))
             {
                 await store.InitAsync(goodData);
 

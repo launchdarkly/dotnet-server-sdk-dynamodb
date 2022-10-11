@@ -13,13 +13,13 @@ workflows:
 jobs:
   test_dotnetcore:
     docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk:2.1-focal
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
       - image: amazon/dynamodb-local
     steps:
       - checkout
       - run: dotnet restore
       - run: dotnet build src/LaunchDarkly.ServerSdk.DynamoDB -f netstandard2.0
-      - run: dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f netcoreapp2.1
+      - run: dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f netcoreapp3.1
 
   test_dotnetframework:
     executor:
@@ -39,5 +39,5 @@ jobs:
           command: java -D"java.library.path=./dynamodb-local/DynamoDBLocal_lib" -jar ./dynamodb-local/DynamoDBLocal.jar -sharedDb
           background: true
       - run: dotnet restore
-      - run: dotnet build src/LaunchDarkly.ServerSdk.DynamoDB -f net452
-      - run: dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f net46
+      - run: dotnet build src/LaunchDarkly.ServerSdk.DynamoDB -f net462
+      - run: dotnet test test/LaunchDarkly.ServerSdk.DynamoDB.Tests -f net462

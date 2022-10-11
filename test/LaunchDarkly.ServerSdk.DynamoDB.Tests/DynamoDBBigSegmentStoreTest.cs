@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using LaunchDarkly.Sdk.Server.Interfaces;
+using LaunchDarkly.Sdk.Server.Subsystems;
 using LaunchDarkly.Sdk.Server.SharedTests.BigSegmentStore;
 using Xunit;
 using Xunit.Abstractions;
 
 using static LaunchDarkly.Sdk.Server.Integrations.DynamoDBTestEnvironment;
-using static LaunchDarkly.Sdk.Server.Interfaces.BigSegmentStoreTypes;
+using static LaunchDarkly.Sdk.Server.Subsystems.BigSegmentStoreTypes;
 
 namespace LaunchDarkly.Sdk.Server.Integrations
 {
@@ -29,8 +29,8 @@ namespace LaunchDarkly.Sdk.Server.Integrations
 
         public Task DisposeAsync() => Task.CompletedTask;
 
-        private IBigSegmentStoreFactory MakeStoreFactory(string prefix) =>
-            DynamoDB.DataStore(TableName)
+        private IComponentConfigurer<IBigSegmentStore> MakeStoreFactory(string prefix) =>
+            DynamoDB.BigSegmentStore(TableName)
                 .Credentials(MakeTestCredentials())
                 .Configuration(MakeTestConfiguration())
                 .Prefix(prefix);

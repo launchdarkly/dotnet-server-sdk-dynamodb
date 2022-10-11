@@ -1,6 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.Runtime;
-using LaunchDarkly.Sdk.Server.Interfaces;
+using LaunchDarkly.Sdk.Server.Subsystems;
 
 namespace LaunchDarkly.Sdk.Server.Integrations
 {
@@ -30,11 +30,11 @@ namespace LaunchDarkly.Sdk.Server.Integrations
     /// </code>
     /// <para>
     /// Note that the builder is passed to one of two methods,
-    /// <see cref="Components.PersistentDataStore(Interfaces.IPersistentDataStoreAsyncFactory)"/> or
-    /// <see cref="Components.BigSegments(Interfaces.IBigSegmentStoreFactory)"/>, depending on the context in
+    /// <see cref="Components.PersistentDataStore(IComponentConfigurer{IPersistentDataStoreAsync})"/> or
+    /// <see cref="Components.BigSegments(IComponentConfigurer{IBigSegmentStore})"/>, depending on the context in
     /// which it is being used. This is because each of those contexts has its own additional
     /// configuration options that are unrelated to the DynamoDB options. For instance, the
-    /// <see cref="Components.PersistentDataStore(IPersistentDataStoreAsyncFactory)"/> builder
+    /// <see cref="Components.PersistentDataStore(IComponentConfigurer{IPersistentDataStore})"/> builder
     /// has options for caching:
     /// </para>
     /// <code>
@@ -62,16 +62,16 @@ namespace LaunchDarkly.Sdk.Server.Integrations
     ///         .Build();
     /// </code>
     /// </remarks>
-    public sealed class DynamoDBDataStoreBuilder : IPersistentDataStoreAsyncFactory, IBigSegmentStoreFactory
+    public abstract class DynamoDBStoreBuilder<T> : IComponentConfigurer<T>, IDiagnosticDescription
     {
-        private AmazonDynamoDBClient _existingClient = null;
-        private AWSCredentials _credentials = null;
-        private AmazonDynamoDBConfig _config = null;
+        internal AmazonDynamoDBClient _existingClient = null;
+        internal AWSCredentials _credentials = null;
+        internal AmazonDynamoDBConfig _config = null;
 
-        private readonly string _tableName;
-        private string _prefix = "";
+        internal readonly string _tableName;
+        internal string _prefix = "";
         
-        internal DynamoDBDataStoreBuilder(string tableName)
+        internal DynamoDBStoreBuilder(string tableName)
         {
             _tableName = tableName;
         }
@@ -95,7 +95,7 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         /// </remarks>
         /// <param name="client">an existing DynamoDB client instance</param>
         /// <returns>the builder</returns>
-        public DynamoDBDataStoreBuilder ExistingClient(AmazonDynamoDBClient client)
+        public DynamoDBStoreBuilder<T> ExistingClient(AmazonDynamoDBClient client)
         {
             _existingClient = client;
             return this;
@@ -110,7 +110,7 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         /// </remarks>
         /// <param name="credentials">the AWS credentials</param>
         /// <returns>the builder</returns>
-        public DynamoDBDataStoreBuilder Credentials(AWSCredentials credentials)
+        public DynamoDBStoreBuilder<T> Credentials(AWSCredentials credentials)
         {
             _credentials = credentials;
             return this;
@@ -125,7 +125,7 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         /// </remarks>
         /// <param name="config">a DynamoDB configuration object</param>
         /// <returns>the builder</returns>
-        public DynamoDBDataStoreBuilder Configuration(AmazonDynamoDBConfig config)
+        public DynamoDBStoreBuilder<T> Configuration(AmazonDynamoDBConfig config)
         {
             _config = config;
             return this;
@@ -142,33 +142,20 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         /// </remarks>
         /// <param name="prefix">the namespace prefix; null for no prefix</param>
         /// <returns>the builder</returns>
-        public DynamoDBDataStoreBuilder Prefix(string prefix)
+        public DynamoDBStoreBuilder<T> Prefix(string prefix)
         {
             _prefix = prefix;
             return this;
         }
 
         /// <inheritdoc/>
-        public IPersistentDataStoreAsync CreatePersistentDataStore(LdClientContext context) =>
-            new DynamoDBDataStoreImpl(
-                MakeClient(),
-                _existingClient != null,
-                _tableName,
-                _prefix,
-                context.Basic.Logger.SubLogger("DataStore.DynamoDB")
-                );
+        public abstract T Build(LdClientContext context);
 
         /// <inheritdoc/>
-        public IBigSegmentStore CreateBigSegmentStore(LdClientContext context) =>
-            new DynamoDBBigSegmentStoreImpl(
-                MakeClient(),
-                _existingClient != null,
-                _tableName,
-                _prefix,
-                context.Basic.Logger.SubLogger("BigSegments.DynamoDB")
-                );
+        public LdValue DescribeConfiguration(LdClientContext context) =>
+            LdValue.Of("DynamoDB");
 
-        private AmazonDynamoDBClient MakeClient()
+        internal AmazonDynamoDBClient MakeClient()
         {
             if (_existingClient != null)
             {
@@ -189,5 +176,33 @@ namespace LaunchDarkly.Sdk.Server.Integrations
             }
             return new AmazonDynamoDBClient(_credentials, _config);
         }
+    }
+
+    internal sealed class BuilderForDataStore : DynamoDBStoreBuilder<IPersistentDataStoreAsync>
+    {
+        internal BuilderForDataStore(string tableName) : base(tableName) { }
+
+        public override IPersistentDataStoreAsync Build(LdClientContext context) =>
+            new DynamoDBDataStoreImpl(
+                MakeClient(),
+                _existingClient != null,
+                _tableName,
+                _prefix,
+                context.Logger.SubLogger("DataStore.DynamoDB")
+                );
+    }
+
+    internal sealed class BuilderForBigSegments : DynamoDBStoreBuilder<IBigSegmentStore>
+    {
+        internal BuilderForBigSegments(string tableName) : base(tableName) { }
+
+        public override IBigSegmentStore Build(LdClientContext context) =>
+            new DynamoDBBigSegmentStoreImpl(
+                MakeClient(),
+                _existingClient != null,
+                _tableName,
+                _prefix,
+                context.Logger.SubLogger("DataStore.DynamoDB")
+                );
     }
 }
