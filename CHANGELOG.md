@@ -2,6 +2,17 @@
 
 All notable changes to the LaunchDarkly .NET SDK DynamoDB integration will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org).
 
+## [3.0.0] - 2022-12-07
+This release corresponds to the 7.0.0 release of the LaunchDarkly server-side .NET SDK. Any application code that is being updated to use the 7.0.0 SDK, and was using a 2.x version of `LaunchDarkly.ServerSdk.DynamoDb`, should now use a 3.x version instead.
+
+There are no functional differences in the behavior of the DynamoDB integration; the differences are only related to changes in the usage of interface types for configuration in the SDK.
+
+### Added:
+- `DynamoDb.BigSegmentStore()`, which creates a configuration builder for use with Big Segments. Previously, the `DynamoDb.DataStore()` builder was used for both regular data stores and Big Segment stores.
+
+### Changed:
+- The type `DynamoDbDataStoreBuilder` has been removed, replaced by a generic type `DynamoDbStoreBuilder`. Application code would not normally need to reference these types by name, but if necessary, use either `DynamoDbStoreBuilder<PersistentDataStore>` or `DynamoDbStoreBuilder<BigSegmentStore>` depending on whether you are configuring a regular data store or a Big Segment store.
+
 ## [2.1.1] - 2022-04-19
 ### Fixed:
 - If the SDK attempts to store a feature flag or segment whose total data size is over the 400KB limit for DynamoDB items, this integration will now log (at Error level) a message like `The item "my-flag-key" in "features" was too large to store in DynamoDB and was dropped` but will still process all other data updates. Previously, it would cause the SDK to enter an error state in which the oversized item would be pointlessly retried and other updates might be lost.
