@@ -13,6 +13,18 @@ references:
   commentId: T:LaunchDarkly.Sdk.Server.Integrations.DynamoDB
   fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDB
   nameWithType: DynamoDB
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDB.BigSegmentStore(System.String)
+  name: BigSegmentStore(String)
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDB.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDB_BigSegmentStore_System_String_
+  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDB.BigSegmentStore(System.String)
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDB.BigSegmentStore(System.String)
+  nameWithType: DynamoDB.BigSegmentStore(String)
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDB.BigSegmentStore*
+  name: BigSegmentStore
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDB.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDB_BigSegmentStore_
+  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDB.BigSegmentStore
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDB.BigSegmentStore
+  nameWithType: DynamoDB.BigSegmentStore
 - uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDB.DataStore(System.String)
   name: DataStore(String)
   href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDB.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDB_DataStore_System_String_
@@ -37,81 +49,108 @@ references:
   commentId: F:LaunchDarkly.Sdk.Server.Integrations.DynamoDB.DataStoreSortKey
   fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDB.DataStoreSortKey
   nameWithType: DynamoDB.DataStoreSortKey
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder
-  name: DynamoDBDataStoreBuilder
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html
-  commentId: T:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder
-  nameWithType: DynamoDBDataStoreBuilder
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Configuration(Amazon.DynamoDBv2.AmazonDynamoDBConfig)
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1
+  name: DynamoDBStoreBuilder<T>
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html
+  commentId: T:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1
+  name.vb: DynamoDBStoreBuilder(Of T)
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T)
+  nameWithType: DynamoDBStoreBuilder<T>
+  nameWithType.vb: DynamoDBStoreBuilder(Of T)
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Build(LaunchDarkly.Sdk.Server.Subsystems.LdClientContext)
+  name: Build(LdClientContext)
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Build_LaunchDarkly_Sdk_Server_Subsystems_LdClientContext_
+  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Build(LaunchDarkly.Sdk.Server.Subsystems.LdClientContext)
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.Build(LaunchDarkly.Sdk.Server.Subsystems.LdClientContext)
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).Build(LaunchDarkly.Sdk.Server.Subsystems.LdClientContext)
+  nameWithType: DynamoDBStoreBuilder<T>.Build(LdClientContext)
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).Build(LdClientContext)
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Build*
+  name: Build
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Build_
+  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Build
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.Build
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).Build
+  nameWithType: DynamoDBStoreBuilder<T>.Build
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).Build
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Configuration(Amazon.DynamoDBv2.AmazonDynamoDBConfig)
   name: Configuration(AmazonDynamoDBConfig)
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Configuration_Amazon_DynamoDBv2_AmazonDynamoDBConfig_
-  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Configuration(Amazon.DynamoDBv2.AmazonDynamoDBConfig)
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Configuration(Amazon.DynamoDBv2.AmazonDynamoDBConfig)
-  nameWithType: DynamoDBDataStoreBuilder.Configuration(AmazonDynamoDBConfig)
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Configuration*
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Configuration_Amazon_DynamoDBv2_AmazonDynamoDBConfig_
+  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Configuration(Amazon.DynamoDBv2.AmazonDynamoDBConfig)
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.Configuration(Amazon.DynamoDBv2.AmazonDynamoDBConfig)
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).Configuration(Amazon.DynamoDBv2.AmazonDynamoDBConfig)
+  nameWithType: DynamoDBStoreBuilder<T>.Configuration(AmazonDynamoDBConfig)
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).Configuration(AmazonDynamoDBConfig)
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Configuration*
   name: Configuration
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Configuration_
-  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Configuration
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Configuration
-  nameWithType: DynamoDBDataStoreBuilder.Configuration
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreateBigSegmentStore(LaunchDarkly.Sdk.Server.Interfaces.LdClientContext)
-  name: CreateBigSegmentStore(LdClientContext)
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreateBigSegmentStore_LaunchDarkly_Sdk_Server_Interfaces_LdClientContext_
-  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreateBigSegmentStore(LaunchDarkly.Sdk.Server.Interfaces.LdClientContext)
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreateBigSegmentStore(LaunchDarkly.Sdk.Server.Interfaces.LdClientContext)
-  nameWithType: DynamoDBDataStoreBuilder.CreateBigSegmentStore(LdClientContext)
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreateBigSegmentStore*
-  name: CreateBigSegmentStore
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreateBigSegmentStore_
-  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreateBigSegmentStore
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreateBigSegmentStore
-  nameWithType: DynamoDBDataStoreBuilder.CreateBigSegmentStore
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreatePersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.LdClientContext)
-  name: CreatePersistentDataStore(LdClientContext)
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreatePersistentDataStore_LaunchDarkly_Sdk_Server_Interfaces_LdClientContext_
-  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreatePersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.LdClientContext)
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreatePersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.LdClientContext)
-  nameWithType: DynamoDBDataStoreBuilder.CreatePersistentDataStore(LdClientContext)
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreatePersistentDataStore*
-  name: CreatePersistentDataStore
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreatePersistentDataStore_
-  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreatePersistentDataStore
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreatePersistentDataStore
-  nameWithType: DynamoDBDataStoreBuilder.CreatePersistentDataStore
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Credentials(Amazon.Runtime.AWSCredentials)
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Configuration_
+  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Configuration
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.Configuration
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).Configuration
+  nameWithType: DynamoDBStoreBuilder<T>.Configuration
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).Configuration
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Credentials(Amazon.Runtime.AWSCredentials)
   name: Credentials(AWSCredentials)
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Credentials_Amazon_Runtime_AWSCredentials_
-  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Credentials(Amazon.Runtime.AWSCredentials)
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Credentials(Amazon.Runtime.AWSCredentials)
-  nameWithType: DynamoDBDataStoreBuilder.Credentials(AWSCredentials)
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Credentials*
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Credentials_Amazon_Runtime_AWSCredentials_
+  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Credentials(Amazon.Runtime.AWSCredentials)
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.Credentials(Amazon.Runtime.AWSCredentials)
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).Credentials(Amazon.Runtime.AWSCredentials)
+  nameWithType: DynamoDBStoreBuilder<T>.Credentials(AWSCredentials)
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).Credentials(AWSCredentials)
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Credentials*
   name: Credentials
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Credentials_
-  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Credentials
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Credentials
-  nameWithType: DynamoDBDataStoreBuilder.Credentials
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.ExistingClient(Amazon.DynamoDBv2.AmazonDynamoDBClient)
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Credentials_
+  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Credentials
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.Credentials
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).Credentials
+  nameWithType: DynamoDBStoreBuilder<T>.Credentials
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).Credentials
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.DescribeConfiguration(LaunchDarkly.Sdk.Server.Subsystems.LdClientContext)
+  name: DescribeConfiguration(LdClientContext)
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_DescribeConfiguration_LaunchDarkly_Sdk_Server_Subsystems_LdClientContext_
+  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.DescribeConfiguration(LaunchDarkly.Sdk.Server.Subsystems.LdClientContext)
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.DescribeConfiguration(LaunchDarkly.Sdk.Server.Subsystems.LdClientContext)
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).DescribeConfiguration(LaunchDarkly.Sdk.Server.Subsystems.LdClientContext)
+  nameWithType: DynamoDBStoreBuilder<T>.DescribeConfiguration(LdClientContext)
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).DescribeConfiguration(LdClientContext)
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.DescribeConfiguration*
+  name: DescribeConfiguration
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_DescribeConfiguration_
+  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.DescribeConfiguration
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.DescribeConfiguration
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).DescribeConfiguration
+  nameWithType: DynamoDBStoreBuilder<T>.DescribeConfiguration
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).DescribeConfiguration
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.ExistingClient(Amazon.DynamoDBv2.AmazonDynamoDBClient)
   name: ExistingClient(AmazonDynamoDBClient)
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_ExistingClient_Amazon_DynamoDBv2_AmazonDynamoDBClient_
-  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.ExistingClient(Amazon.DynamoDBv2.AmazonDynamoDBClient)
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.ExistingClient(Amazon.DynamoDBv2.AmazonDynamoDBClient)
-  nameWithType: DynamoDBDataStoreBuilder.ExistingClient(AmazonDynamoDBClient)
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.ExistingClient*
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_ExistingClient_Amazon_DynamoDBv2_AmazonDynamoDBClient_
+  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.ExistingClient(Amazon.DynamoDBv2.AmazonDynamoDBClient)
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.ExistingClient(Amazon.DynamoDBv2.AmazonDynamoDBClient)
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).ExistingClient(Amazon.DynamoDBv2.AmazonDynamoDBClient)
+  nameWithType: DynamoDBStoreBuilder<T>.ExistingClient(AmazonDynamoDBClient)
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).ExistingClient(AmazonDynamoDBClient)
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.ExistingClient*
   name: ExistingClient
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_ExistingClient_
-  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.ExistingClient
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.ExistingClient
-  nameWithType: DynamoDBDataStoreBuilder.ExistingClient
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Prefix(System.String)
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_ExistingClient_
+  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.ExistingClient
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.ExistingClient
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).ExistingClient
+  nameWithType: DynamoDBStoreBuilder<T>.ExistingClient
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).ExistingClient
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Prefix(System.String)
   name: Prefix(String)
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Prefix_System_String_
-  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Prefix(System.String)
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Prefix(System.String)
-  nameWithType: DynamoDBDataStoreBuilder.Prefix(String)
-- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Prefix*
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Prefix_System_String_
+  commentId: M:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Prefix(System.String)
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.Prefix(System.String)
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).Prefix(System.String)
+  nameWithType: DynamoDBStoreBuilder<T>.Prefix(String)
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).Prefix(String)
+- uid: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Prefix*
   name: Prefix
-  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Prefix_
-  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Prefix
-  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Prefix
-  nameWithType: DynamoDBDataStoreBuilder.Prefix
+  href: api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Prefix_
+  commentId: Overload:LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Prefix
+  fullName: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder<T>.Prefix
+  fullName.vb: LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder(Of T).Prefix
+  nameWithType: DynamoDBStoreBuilder<T>.Prefix
+  nameWithType.vb: DynamoDBStoreBuilder(Of T).Prefix

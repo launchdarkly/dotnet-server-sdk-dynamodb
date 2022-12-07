@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/LaunchDarkly.Sdk.Server.Integrations.DynamoDB.html",
-          "hash": "x0FM6WOs/nwH5/GPyL6ItbT2iHa18TnikZzGiMrRj9U="
+          "hash": "TipoUnXTVt+kCnHabtwD9SrFNk8z7A1Q9m7Lqd+nWsI="
         }
       },
       "is_incremental": false,
@@ -17,11 +17,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "build/api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.yml",
+      "source_relative_path": "build/api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.yml",
       "output": {
         ".html": {
-          "relative_path": "api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html",
-          "hash": "DCbNlwMv+4EHyf283Pfa7hsCOjeLNigj5a6an+aZMqI="
+          "relative_path": "api/LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html",
+          "hash": "bHTOIbPUMf5nt9xW/vCOeqoa2ueHmMs5W0i5ZqEb6wA="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/LaunchDarkly.Sdk.Server.Integrations.html",
-          "hash": "Z/M31mG6dVvp3mOfUyzyH+zoYeoIsTaqFiKKX+l0z3k="
+          "hash": "Rlcm5zdVjSRL60duVAROpuineZ4/bevsAxJB2sWo9x4="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "OIyymnfxO+QfOMh6ZWC8Os5BFzUQ776m7eWlBWZb7As="
+          "hash": "53CqcMk6STSFS/dXcB85/ai7El8dtgh4RABl5FQdT3E="
         }
       },
       "is_incremental": false,
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "wU9qEtx4vfsRpWPMww4r+lz9Defim3ux57TRVCZ+TS4="
+          "hash": "ldeW3xeBRD6Su5sePtPewxQflyon1WsBDjAI2hAXaPw="
         }
       },
       "is_incremental": false,

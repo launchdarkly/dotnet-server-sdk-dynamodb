@@ -139,14 +139,14 @@ when you create the table. The key type must be String.</p>
   </table>
   <h3 id="methods">Methods
   </h3>
-  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDB_DataStore_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDB.DataStore*"></a>
-  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDB_DataStore_System_String_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDB.DataStore(System.String)">DataStore(String)</h4>
-  <div class="markdown level1 summary"><p>Returns a builder object for creating a DynamoDB-backed data store.</p>
+  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDB_BigSegmentStore_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDB.BigSegmentStore*"></a>
+  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDB_BigSegmentStore_System_String_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDB.BigSegmentStore(System.String)">BigSegmentStore(String)</h4>
+  <div class="markdown level1 summary"><p>Returns a builder object for creating a DynamoDB-backed Big Segment store.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DynamoDBDataStoreBuilder DataStore(string tableName)</code></pre>
+    <pre><code class="lang-csharp hljs">public static DynamoDBStoreBuilder&lt;IBigSegmentStore&gt; BigSegmentStore(string tableName)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -176,7 +176,78 @@ when you create the table. The key type must be String.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html">DynamoDBDataStoreBuilder</a></td>
+        <td><a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html">DynamoDBStoreBuilder</a>&lt;<span class="xref">LaunchDarkly.Sdk.Server.Subsystems.IBigSegmentStore</span>&gt;</td>
+        <td><p>a Big Segment store configuration object</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDB_BigSegmentStore_System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p><p>
+You can use methods of the builder to specify any non-default DynamoDB options
+you may want, before passing the builder to
+<span class="xref">LaunchDarkly.Sdk.Server.Components.BigSegments(LaunchDarkly.Sdk.Server.Subsystems.IComponentConfigurer{LaunchDarkly.Sdk.Server.Subsystems.IBigSegmentStore})</span>.
+In this example, the store is configured to use a table called &quot;table2&quot;:
+</p></p>
+<pre><code>    var config = Configuration.Builder(&quot;sdk-key&quot;)
+        .DataStore(
+            Components.BigSegments(
+                DynamoDB.BigSegmentStore(&quot;table2&quot;)
+            )
+        )
+        .Build();</code></pre>
+<p><p>
+Note that the SDK also has its own options related to Big Segments that are configured
+at a different level, because they are independent of what database is being used. For
+instance, the builder returned by <span class="xref">LaunchDarkly.Sdk.Server.Components.BigSegments(LaunchDarkly.Sdk.Server.Subsystems.IComponentConfigurer{LaunchDarkly.Sdk.Server.Subsystems.IBigSegmentStore})</span>
+has an option for the status polling interval:
+</p></p>
+<pre><code>    var config = Configuration.Builder(&quot;sdk-key&quot;)
+        .DataStore(
+            Components.BigSegments(
+                DynamoDB.BigSegmentStore(&quot;table2&quot;)
+            ).StatusPollInterval(TimeSpan.FromSeconds(30))
+        )
+        .Build();</code></pre>
+</div>
+  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDB_DataStore_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDB.DataStore*"></a>
+  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDB_DataStore_System_String_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDB.DataStore(System.String)">DataStore(String)</h4>
+  <div class="markdown level1 summary"><p>Returns a builder object for creating a Redis-backed persistent data store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DynamoDBStoreBuilder&lt;IPersistentDataStoreAsync&gt; DataStore(string tableName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">tableName</span></td>
+        <td><p>the DynamoDB table name; this table must already exist</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html">DynamoDBStoreBuilder</a>&lt;<span class="xref">LaunchDarkly.Sdk.Server.Subsystems.IPersistentDataStoreAsync</span>&gt;</td>
         <td><p>a data store configuration object</p>
 </td>
       </tr>
@@ -184,10 +255,14 @@ when you create the table. The key type must be String.</p>
   </table>
   <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDB_DataStore_System_String__remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p><p>
-This can be used either for the main data store that holds feature flag data, or for the big
-segment store, or both. If you are using both, they do not have to have the same parameters. For
-instance, in this example the main data store uses a table called &quot;table1&quot; and the big segment
-store uses a table called &quot;table2&quot;:
+This is for the main data store that holds feature flag data. To configure a
+Big Segment store, use <a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDB.html#LaunchDarkly_Sdk_Server_Integrations_DynamoDB_BigSegmentStore_System_String_">BigSegmentStore(String)</a> instead.
+</p>
+<p>
+You can use methods of the builder to specify any non-default DynamoDB options
+you may want, before passing the builder to
+<span class="xref">LaunchDarkly.Sdk.Server.Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Subsystems.IComponentConfigurer{LaunchDarkly.Sdk.Server.Subsystems.IPersistentDataStoreAsync})</span>.
+In this example, the store is configured to use a table called &quot;table1&quot;:
 </p></p>
 <pre><code>    var config = Configuration.Builder(&quot;sdk-key&quot;)
         .DataStore(
@@ -195,19 +270,11 @@ store uses a table called &quot;table2&quot;:
                 DynamoDB.DataStore(&quot;table1&quot;)
             )
         )
-        .BigSegments(
-            Components.BigSegments(
-                DynamoDB.DataStore(&quot;table2&quot;)
-            )
-        )
         .Build();</code></pre>
 <p><p>
-Note that the builder is passed to one of two methods,
-<span class="xref">LaunchDarkly.Sdk.Server.Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory)</span> or
-<span class="xref">LaunchDarkly.Sdk.Server.Components.BigSegments(LaunchDarkly.Sdk.Server.Interfaces.IBigSegmentStoreFactory)</span>, depending on the context in
-which it is being used. This is because each of those contexts has its own additional
-configuration options that are unrelated to the DynamoDB options. For instance, the
-<span class="xref">LaunchDarkly.Sdk.Server.Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory)</span> builder
+Note that the SDK also has its own options related to data storage that are configured
+at a different level, because they are independent of what database is being used. For
+instance, the builder returned by <span class="xref">LaunchDarkly.Sdk.Server.Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Subsystems.IComponentConfigurer{LaunchDarkly.Sdk.Server.Subsystems.IPersistentDataStoreAsync})</span>
 has options for caching:
 </p></p>
 <pre><code>    var config = Configuration.Builder(&quot;sdk-key&quot;)

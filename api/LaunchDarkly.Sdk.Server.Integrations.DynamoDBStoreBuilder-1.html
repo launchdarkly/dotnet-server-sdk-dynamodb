@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class DynamoDBDataStoreBuilder
+    <title>Class DynamoDBStoreBuilder&lt;T&gt;
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class DynamoDBDataStoreBuilder
+    <meta name="title" content="Class DynamoDBStoreBuilder&lt;T&gt;
    ">
     <meta name="generator" content="docfx 2.57.2.0">
     
@@ -68,10 +68,10 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder">
+            <article class="content wrap" id="_content" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1">
   
   
-  <h1 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder" class="text-break">Class DynamoDBDataStoreBuilder
+  <h1 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1" class="text-break">Class DynamoDBStoreBuilder&lt;T&gt;
   </h1>
   <div class="markdown level0 summary"><p>A builder for configuring the DynamoDB-based persistent data store.</p>
 </div>
@@ -79,20 +79,35 @@
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
-    <div class="level1"><span class="xref">DynamoDBDataStoreBuilder</span></div>
+    <div class="level1"><span class="xref">DynamoDBStoreBuilder&lt;T&gt;</span></div>
   </div>
   <div classs="implements">
     <h5>Implements</h5>
-    <div><span class="xref">LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory</span></div>
-    <div><span class="xref">LaunchDarkly.Sdk.Server.Interfaces.IBigSegmentStoreFactory</span></div>
+    <div><span class="xref">LaunchDarkly.Sdk.Server.Subsystems.IComponentConfigurer</span>&lt;T&gt;</div>
+    <div><span class="xref">LaunchDarkly.Sdk.Server.Subsystems.IDiagnosticDescription</span></div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.html">LaunchDarkly.Sdk.Server.Integrations</a></h6>
   <h6><strong>Assembly</strong>: LaunchDarkly.ServerSdk.DynamoDB.dll</h6>
-  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_syntax">Syntax</h5>
+  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class DynamoDBDataStoreBuilder : Object, IPersistentDataStoreAsyncFactory, IBigSegmentStoreFactory</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract class DynamoDBStoreBuilder&lt;T&gt; : Object, IComponentConfigurer&lt;T&gt;, IDiagnosticDescription</code></pre>
   </div>
-  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_remarks"><strong>Remarks</strong></h5>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_remarks"><strong>Remarks</strong></h5>
   <div class="markdown level0 remarks"><p><p>
 This can be used either for the main data store that holds feature flag data, or for the big
 segment store, or both. If you are using both, they do not have to have the same parameters. For
@@ -113,11 +128,11 @@ store uses a table called &quot;table2&quot;:
         .Build();</code></pre>
 <p><p>
 Note that the builder is passed to one of two methods,
-<span class="xref">LaunchDarkly.Sdk.Server.Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory)</span> or
-<span class="xref">LaunchDarkly.Sdk.Server.Components.BigSegments(LaunchDarkly.Sdk.Server.Interfaces.IBigSegmentStoreFactory)</span>, depending on the context in
+<span class="xref">LaunchDarkly.Sdk.Server.Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Subsystems.IComponentConfigurer{LaunchDarkly.Sdk.Server.Subsystems.IPersistentDataStoreAsync})</span> or
+<span class="xref">LaunchDarkly.Sdk.Server.Components.BigSegments(LaunchDarkly.Sdk.Server.Subsystems.IComponentConfigurer{LaunchDarkly.Sdk.Server.Subsystems.IBigSegmentStore})</span>, depending on the context in
 which it is being used. This is because each of those contexts has its own additional
 configuration options that are unrelated to the DynamoDB options. For instance, the
-<span class="xref">LaunchDarkly.Sdk.Server.Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory)</span> builder
+<span class="xref">LaunchDarkly.Sdk.Server.Components.PersistentDataStore(LaunchDarkly.Sdk.Server.Subsystems.IComponentConfigurer{LaunchDarkly.Sdk.Server.Subsystems.IPersistentDataStore})</span> builder
 has options for caching:
 </p></p>
 <pre><code>    var config = Configuration.Builder(&quot;sdk-key&quot;)
@@ -143,14 +158,54 @@ Builder calls can be chained, for example:
 </div>
   <h3 id="methods">Methods
   </h3>
-  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Configuration_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Configuration*"></a>
-  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Configuration_Amazon_DynamoDBv2_AmazonDynamoDBConfig_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Configuration(Amazon.DynamoDBv2.AmazonDynamoDBConfig)">Configuration(AmazonDynamoDBConfig)</h4>
+  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Build_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Build*"></a>
+  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Build_LaunchDarkly_Sdk_Server_Subsystems_LdClientContext_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Build(LaunchDarkly.Sdk.Server.Subsystems.LdClientContext)">Build(LdClientContext)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract T Build(LdClientContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">LaunchDarkly.Sdk.Server.Subsystems.LdClientContext</span></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">T</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Configuration_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Configuration*"></a>
+  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Configuration_Amazon_DynamoDBv2_AmazonDynamoDBConfig_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Configuration(Amazon.DynamoDBv2.AmazonDynamoDBConfig)">Configuration(AmazonDynamoDBConfig)</h4>
   <div class="markdown level1 summary"><p>Specifies an entire DynamoDB configuration.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DynamoDBDataStoreBuilder Configuration(AmazonDynamoDBConfig config)</code></pre>
+    <pre><code class="lang-csharp hljs">public DynamoDBStoreBuilder&lt;T&gt; Configuration(AmazonDynamoDBConfig config)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -180,104 +235,24 @@ Builder calls can be chained, for example:
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html">DynamoDBDataStoreBuilder</a></td>
+        <td><a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html">DynamoDBStoreBuilder</a>&lt;T&gt;</td>
         <td><p>the builder</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Configuration_Amazon_DynamoDBv2_AmazonDynamoDBConfig__remarks">Remarks</h5>
+  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Configuration_Amazon_DynamoDBv2_AmazonDynamoDBConfig__remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>If this is not provided explicitly, the AWS SDK will attempt to determine your
 current region based on environment variables and/or local configuration files.</p>
 </div>
-  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreateBigSegmentStore_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreateBigSegmentStore*"></a>
-  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreateBigSegmentStore_LaunchDarkly_Sdk_Server_Interfaces_LdClientContext_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreateBigSegmentStore(LaunchDarkly.Sdk.Server.Interfaces.LdClientContext)">CreateBigSegmentStore(LdClientContext)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IBigSegmentStore CreateBigSegmentStore(LdClientContext context)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">LaunchDarkly.Sdk.Server.Interfaces.LdClientContext</span></td>
-        <td><span class="parametername">context</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">LaunchDarkly.Sdk.Server.Interfaces.IBigSegmentStore</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreatePersistentDataStore_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreatePersistentDataStore*"></a>
-  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_CreatePersistentDataStore_LaunchDarkly_Sdk_Server_Interfaces_LdClientContext_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.CreatePersistentDataStore(LaunchDarkly.Sdk.Server.Interfaces.LdClientContext)">CreatePersistentDataStore(LdClientContext)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IPersistentDataStoreAsync CreatePersistentDataStore(LdClientContext context)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">LaunchDarkly.Sdk.Server.Interfaces.LdClientContext</span></td>
-        <td><span class="parametername">context</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsync</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Credentials_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Credentials*"></a>
-  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Credentials_Amazon_Runtime_AWSCredentials_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Credentials(Amazon.Runtime.AWSCredentials)">Credentials(AWSCredentials)</h4>
+  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Credentials_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Credentials*"></a>
+  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Credentials_Amazon_Runtime_AWSCredentials_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Credentials(Amazon.Runtime.AWSCredentials)">Credentials(AWSCredentials)</h4>
   <div class="markdown level1 summary"><p>Sets the AWS client credentials.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DynamoDBDataStoreBuilder Credentials(AWSCredentials credentials)</code></pre>
+    <pre><code class="lang-csharp hljs">public DynamoDBStoreBuilder&lt;T&gt; Credentials(AWSCredentials credentials)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -307,25 +282,65 @@ current region based on environment variables and/or local configuration files.<
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html">DynamoDBDataStoreBuilder</a></td>
+        <td><a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html">DynamoDBStoreBuilder</a>&lt;T&gt;</td>
         <td><p>the builder</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Credentials_Amazon_Runtime_AWSCredentials__remarks">Remarks</h5>
+  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Credentials_Amazon_Runtime_AWSCredentials__remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>If you do not set them programmatically, the AWS SDK will attempt to find them in
 environment variables and/or local configuration files.</p>
 </div>
-  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_ExistingClient_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.ExistingClient*"></a>
-  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_ExistingClient_Amazon_DynamoDBv2_AmazonDynamoDBClient_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.ExistingClient(Amazon.DynamoDBv2.AmazonDynamoDBClient)">ExistingClient(AmazonDynamoDBClient)</h4>
+  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_DescribeConfiguration_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.DescribeConfiguration*"></a>
+  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_DescribeConfiguration_LaunchDarkly_Sdk_Server_Subsystems_LdClientContext_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.DescribeConfiguration(LaunchDarkly.Sdk.Server.Subsystems.LdClientContext)">DescribeConfiguration(LdClientContext)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LdValue DescribeConfiguration(LdClientContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">LaunchDarkly.Sdk.Server.Subsystems.LdClientContext</span></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">LaunchDarkly.Sdk.LdValue</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_ExistingClient_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.ExistingClient*"></a>
+  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_ExistingClient_Amazon_DynamoDBv2_AmazonDynamoDBClient_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.ExistingClient(Amazon.DynamoDBv2.AmazonDynamoDBClient)">ExistingClient(AmazonDynamoDBClient)</h4>
   <div class="markdown level1 summary"><p>Specifies an existing, already-configured DynamoDB client instance that the data store
 should use rather than creating one of its own.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DynamoDBDataStoreBuilder ExistingClient(AmazonDynamoDBClient client)</code></pre>
+    <pre><code class="lang-csharp hljs">public DynamoDBStoreBuilder&lt;T&gt; ExistingClient(AmazonDynamoDBClient client)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -355,13 +370,13 @@ should use rather than creating one of its own.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html">DynamoDBDataStoreBuilder</a></td>
+        <td><a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html">DynamoDBStoreBuilder</a>&lt;T&gt;</td>
         <td><p>the builder</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_ExistingClient_Amazon_DynamoDBv2_AmazonDynamoDBClient__remarks">Remarks</h5>
+  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_ExistingClient_Amazon_DynamoDBv2_AmazonDynamoDBClient__remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>
 If you specify an existing client, then the other builder methods for configuring DynamoDB
 are ignored.
@@ -374,14 +389,14 @@ It is your responsibility to call <code>Dispose()</code> on the <code>AmazonDyna
 done with it.
 </p>
 </div>
-  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Prefix_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Prefix*"></a>
-  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Prefix_System_String_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.Prefix(System.String)">Prefix(String)</h4>
+  <a id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Prefix_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Prefix*"></a>
+  <h4 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Prefix_System_String_" data-uid="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder`1.Prefix(System.String)">Prefix(String)</h4>
   <div class="markdown level1 summary"><p>Sets an optional namespace prefix for all keys stored in DynamoDB.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DynamoDBDataStoreBuilder Prefix(string prefix)</code></pre>
+    <pre><code class="lang-csharp hljs">public DynamoDBStoreBuilder&lt;T&gt; Prefix(string prefix)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -411,13 +426,13 @@ done with it.
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBDataStoreBuilder.html">DynamoDBDataStoreBuilder</a></td>
+        <td><a class="xref" href="LaunchDarkly.Sdk.Server.Integrations.DynamoDBStoreBuilder-1.html">DynamoDBStoreBuilder</a>&lt;T&gt;</td>
         <td><p>the builder</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBDataStoreBuilder_Prefix_System_String__remarks">Remarks</h5>
+  <h5 id="LaunchDarkly_Sdk_Server_Integrations_DynamoDBStoreBuilder_1_Prefix_System_String__remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>You may use this if you are sharing the same database table between multiple clients that
 are for different LaunchDarkly environments, to avoid key collisions. However, in DynamoDB
 it is common to use separate tables rather than share a single table for unrelated
@@ -425,10 +440,10 @@ applications, so by default there is no prefix.</p>
 </div>
   <h3 id="implements">Implements</h3>
   <div>
-      <span class="xref">LaunchDarkly.Sdk.Server.Interfaces.IPersistentDataStoreAsyncFactory</span>
+      <span class="xref">LaunchDarkly.Sdk.Server.Subsystems.IComponentConfigurer&lt;&gt;</span>
   </div>
   <div>
-      <span class="xref">LaunchDarkly.Sdk.Server.Interfaces.IBigSegmentStoreFactory</span>
+      <span class="xref">LaunchDarkly.Sdk.Server.Subsystems.IDiagnosticDescription</span>
   </div>
 </article>
           </div>
