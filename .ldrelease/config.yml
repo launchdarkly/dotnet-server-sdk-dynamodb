@@ -15,6 +15,8 @@ jobs:
 
 branches:
   - name: main
+    description: 4.x - for SDK 8+
+  - name: 3.x
     description: 3.x - for SDK 7+
   - name: 2.x
     description: 2.x - for SDK 6.x
