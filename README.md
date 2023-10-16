@@ -8,7 +8,7 @@ This library provides a DynamoDB-backed persistence mechanism (data store) for t
 
 For more information, see also: [Using DynamoDB as a persistent feature store](https://docs.launchdarkly.com/sdk/features/storing-data/dynamodb#net).
 
-Version 3.0.0 and above of this library works with version 7.0.0 and above of the LaunchDarkly .NET SDK. For earlier versions of the SDK, see the changelog for which version of this library to use.
+Version 4.0.0 and above of this library works with version 8.0.0 and above of the LaunchDarkly .NET SDK. For earlier versions of the SDK, see the changelog for which version of this library to use.
 
 For full usage details and examples, see the [API reference](launchdarkly.github.io/dotnet-server-sdk-dynamodb).
 
