@@ -113,12 +113,10 @@ namespace LaunchDarkly.Sdk.Server.SharedTests.BigSegmentStore
         [InlineData(new string[] { segmentRef1, segmentRef2 }, new string[] { segmentRef2, segmentRef3 })]
         public async void MembershipFound(string[] includes, string[] excludes)
         {
-
-            await Configuration.ClearDataAction(prefix);
-            await Configuration.SetSegmentsAction(prefix, fakeUserHash, includes, excludes);
-
-            using (var store = MakeStore())
+            using (var store = await MakeEmptyStore())
             {
+                await Configuration.SetSegmentsAction(prefix, fakeUserHash, includes, excludes);
+
                 var membership = await store.GetMembershipAsync(fakeUserHash);
 
                 AssertEqualMembership(NewMembershipFromSegmentRefs(includes, excludes), membership);
