@@ -37,17 +37,18 @@ namespace LaunchDarkly.Sdk.Server.Integrations
 
         private async Task SetMetadata(string prefix, StoreMetadata metadata)
         {
-            var client = CreateTestClient();
-            var key = prefix + ":" + DynamoDBBigSegmentStoreImpl.MetadataKey;
-            var timeValue = metadata.LastUpToDate.HasValue ?
-                metadata.LastUpToDate.Value.Value.ToString() : null;
-            await client.PutItemAsync(new PutItemRequest(TableName,
-                new Dictionary<string, AttributeValue>
-                {
-                    { DynamoDB.DataStorePartitionKey, new AttributeValue { S = key } },
-                    { DynamoDB.DataStoreSortKey, new AttributeValue { S = key } },
-                    { DynamoDBBigSegmentStoreImpl.SyncTimeAttr, new AttributeValue { N = timeValue } }
-                }));
+            using(var client = CreateTestClient()) {
+                var key = prefix + ":" + DynamoDBBigSegmentStoreImpl.MetadataKey;
+                var timeValue = metadata.LastUpToDate.HasValue ?
+                    metadata.LastUpToDate.Value.Value.ToString() : null;
+                await client.PutItemAsync(new PutItemRequest(TableName,
+                    new Dictionary<string, AttributeValue>
+                    {
+                        { DynamoDB.DataStorePartitionKey, new AttributeValue { S = key } },
+                        { DynamoDB.DataStoreSortKey, new AttributeValue { S = key } },
+                        { DynamoDBBigSegmentStoreImpl.SyncTimeAttr, new AttributeValue { N = timeValue } }
+                    }));
+            }
         }
 
         private async Task SetSegments(string prefix, string userHash,
