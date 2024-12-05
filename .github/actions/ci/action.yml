@@ -1,5 +1,5 @@
 name: CI
-description: Runs CI for the .NET Server SDK
+description: Build and Test
 inputs:
   sdk:
     description: 'The dotnet SDK to use.'
