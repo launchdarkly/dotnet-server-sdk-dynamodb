@@ -53,19 +53,20 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         private async Task SetSegments(string prefix, string userHash,
             IEnumerable<string> includedRefs, IEnumerable<string> excludedRefs)
         {
-            var client = CreateTestClient();
-            if (includedRefs != null)
-            {
-                foreach (var value in includedRefs)
+            using(var client = CreateTestClient()) {
+                if (includedRefs != null)
                 {
-                    await AddToSetAsync(client, prefix, userHash, DynamoDBBigSegmentStoreImpl.IncludedAttr, value);
+                    foreach (var value in includedRefs)
+                    {
+                        await AddToSetAsync(client, prefix, userHash, DynamoDBBigSegmentStoreImpl.IncludedAttr, value);
+                    }
                 }
-            }
-            if (excludedRefs != null)
-            {
-                foreach (var value in excludedRefs)
+                if (excludedRefs != null)
                 {
-                    await AddToSetAsync(client, prefix, userHash, DynamoDBBigSegmentStoreImpl.ExcludedAttr, value);
+                    foreach (var value in excludedRefs)
+                    {
+                        await AddToSetAsync(client, prefix, userHash, DynamoDBBigSegmentStoreImpl.ExcludedAttr, value);
+                    }
                 }
             }
         }
