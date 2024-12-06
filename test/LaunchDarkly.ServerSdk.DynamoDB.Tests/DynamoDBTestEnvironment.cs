@@ -20,8 +20,10 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         public static AmazonDynamoDBConfig MakeTestConfiguration() =>
             new AmazonDynamoDBConfig()
             {
-                ServiceURL = "http://localhost:8000"   // assumes we're running a local DynamoDB
+                ServiceURL = "http://localhost:8000" // assumes we're running a local DynamoDB
             };
+
+        public static AmazonDynamoDBClient client = CreateTestClient();
 
         public static async Task CreateTableIfNecessary()
         {
@@ -33,34 +35,32 @@ namespace LaunchDarkly.Sdk.Server.Integrations
                     return;
                 }
 
-                using (var client = CreateTestClient())
+                try
                 {
-                    try
-                    {
-                        await client.DescribeTableAsync(new DescribeTableRequest(TableName));
-                        return; // table exists
-                    }
-                    catch (ResourceNotFoundException)
-                    {
-                        // fall through to code below - we'll create the table
-                    }
-                    var request = new CreateTableRequest()
-                    {
-                        TableName = TableName,
-                        KeySchema = new List<KeySchemaElement>()
-                        {
-                            new KeySchemaElement(DynamoDB.DataStorePartitionKey, KeyType.HASH),
-                            new KeySchemaElement(DynamoDB.DataStoreSortKey, KeyType.RANGE)
-                        },
-                        AttributeDefinitions = new List<AttributeDefinition>()
-                        {
-                            new AttributeDefinition(DynamoDB.DataStorePartitionKey, ScalarAttributeType.S),
-                            new AttributeDefinition(DynamoDB.DataStoreSortKey, ScalarAttributeType.S)
-                        },
-                        ProvisionedThroughput = new ProvisionedThroughput(1, 1)
-                    };
-                    await client.CreateTableAsync(request);
+                    await client.DescribeTableAsync(new DescribeTableRequest(TableName));
+                    return; // table exists
                 }
+                catch (ResourceNotFoundException)
+                {
+                    // fall through to code below - we'll create the table
+                }
+
+                var request = new CreateTableRequest()
+                {
+                    TableName = TableName,
+                    KeySchema = new List<KeySchemaElement>()
+                    {
+                        new KeySchemaElement(DynamoDB.DataStorePartitionKey, KeyType.HASH),
+                        new KeySchemaElement(DynamoDB.DataStoreSortKey, KeyType.RANGE)
+                    },
+                    AttributeDefinitions = new List<AttributeDefinition>()
+                    {
+                        new AttributeDefinition(DynamoDB.DataStorePartitionKey, ScalarAttributeType.S),
+                        new AttributeDefinition(DynamoDB.DataStoreSortKey, ScalarAttributeType.S)
+                    },
+                    ProvisionedThroughput = new ProvisionedThroughput(1, 1)
+                };
+                await client.CreateTableAsync(request);
             }
             finally
             {
@@ -72,29 +72,27 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         public static async Task ClearAllData(string prefix)
         {
             var keyPrefix = prefix is null ? "" : (prefix + ":");
-            using (var client = CreateTestClient())
+
+            var deleteReqs = new List<WriteRequest>();
+            ScanRequest request = new ScanRequest(TableName)
             {
-                var deleteReqs = new List<WriteRequest>();
-                ScanRequest request = new ScanRequest(TableName)
+                ConsistentRead = true,
+                ProjectionExpression = "#namespace, #key",
+                ExpressionAttributeNames = new Dictionary<string, string>()
                 {
-                    ConsistentRead = true,
-                    ProjectionExpression = "#namespace, #key",
-                    ExpressionAttributeNames = new Dictionary<string, string>()
+                    { "#namespace", DynamoDB.DataStorePartitionKey },
+                    { "#key", DynamoDB.DataStoreSortKey }
+                }
+            };
+            await DynamoDBHelpers.IterateScan(client, request,
+                item =>
+                {
+                    if (item[DynamoDB.DataStorePartitionKey].S.StartsWith(keyPrefix))
                     {
-                        { "#namespace", DynamoDB.DataStorePartitionKey },
-                        { "#key", DynamoDB.DataStoreSortKey }
+                        deleteReqs.Add(new WriteRequest(new DeleteRequest(item)));
                     }
-                };
-                await DynamoDBHelpers.IterateScan(client, request,
-                    item =>
-                    {
-                        if (item[DynamoDB.DataStorePartitionKey].S.StartsWith(keyPrefix))
-                        {
-                            deleteReqs.Add(new WriteRequest(new DeleteRequest(item)));
-                        }
-                    });
-                await DynamoDBHelpers.BatchWriteRequestsAsync(client, TableName, deleteReqs);
-            }
+                });
+            await DynamoDBHelpers.BatchWriteRequestsAsync(client, TableName, deleteReqs);
         }
 
         public static AmazonDynamoDBClient CreateTestClient() =>
