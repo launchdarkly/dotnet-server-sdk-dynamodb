@@ -6,7 +6,6 @@ using LaunchDarkly.Sdk.Server.Subsystems;
 using LaunchDarkly.Sdk.Server.SharedTests.BigSegmentStore;
 using Xunit;
 using Xunit.Abstractions;
-
 using static LaunchDarkly.Sdk.Server.Integrations.DynamoDBTestEnvironment;
 using static LaunchDarkly.Sdk.Server.Subsystems.BigSegmentStoreTypes;
 
@@ -14,7 +13,6 @@ namespace LaunchDarkly.Sdk.Server.Integrations
 {
     public class DynamoDBBigSegmentStoreTest : BigSegmentStoreBaseTests, IAsyncLifetime
     {
-
         override protected BigSegmentStoreTestConfig Configuration => new BigSegmentStoreTestConfig
         {
             StoreFactoryFunc = MakeStoreFactory,
@@ -23,7 +21,9 @@ namespace LaunchDarkly.Sdk.Server.Integrations
             SetSegmentsAction = SetSegments
         };
 
-        public DynamoDBBigSegmentStoreTest(ITestOutputHelper testOutput) : base(testOutput) { }
+        public DynamoDBBigSegmentStoreTest(ITestOutputHelper testOutput) : base(testOutput)
+        {
+        }
 
         public Task InitializeAsync() => CreateTableIfNecessary();
 
@@ -31,16 +31,14 @@ namespace LaunchDarkly.Sdk.Server.Integrations
 
         private IComponentConfigurer<IBigSegmentStore> MakeStoreFactory(string prefix) =>
             DynamoDB.BigSegmentStore(TableName)
-                .Credentials(MakeTestCredentials())
-                .Configuration(MakeTestConfiguration())
+                .ExistingClient(DynamoDBTestEnvironment.client)
                 .Prefix(prefix);
 
         private async Task SetMetadata(string prefix, StoreMetadata metadata)
         {
-            var client = CreateTestClient();
+            var client = DynamoDBTestEnvironment.client;
             var key = prefix + ":" + DynamoDBBigSegmentStoreImpl.MetadataKey;
-            var timeValue = metadata.LastUpToDate.HasValue ?
-                metadata.LastUpToDate.Value.Value.ToString() : null;
+            var timeValue = metadata.LastUpToDate.HasValue ? metadata.LastUpToDate.Value.Value.ToString() : null;
             await client.PutItemAsync(new PutItemRequest(TableName,
                 new Dictionary<string, AttributeValue>
                 {
@@ -53,7 +51,7 @@ namespace LaunchDarkly.Sdk.Server.Integrations
         private async Task SetSegments(string prefix, string userHash,
             IEnumerable<string> includedRefs, IEnumerable<string> excludedRefs)
         {
-            var client = CreateTestClient();
+            var client = DynamoDBTestEnvironment.client;
             if (includedRefs != null)
             {
                 foreach (var value in includedRefs)
@@ -61,6 +59,7 @@ namespace LaunchDarkly.Sdk.Server.Integrations
                     await AddToSetAsync(client, prefix, userHash, DynamoDBBigSegmentStoreImpl.IncludedAttr, value);
                 }
             }
+
             if (excludedRefs != null)
             {
                 foreach (var value in excludedRefs)
@@ -80,7 +79,7 @@ namespace LaunchDarkly.Sdk.Server.Integrations
                 Key = new Dictionary<string, AttributeValue>
                 {
                     { DynamoDB.DataStorePartitionKey, new AttributeValue { S = namespaceKey } },
-                    { DynamoDB.DataStoreSortKey, new AttributeValue { S = userHash} },
+                    { DynamoDB.DataStoreSortKey, new AttributeValue { S = userHash } },
                 },
                 UpdateExpression = string.Format("ADD {0} :value", attrName),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
