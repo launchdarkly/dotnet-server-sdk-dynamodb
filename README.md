@@ -1,4 +1,4 @@
-# [DEPRECATED] LaunchDarkly Server-Side SDK for .NET - DynamoDB integration - please use https://github.com/launchdarkly/dotnet-core/tree/main/pkgs/dotnet-server-sdk-dynamodb
+# [DEPRECATED]
 
 Development has moved to [dotnet-core repository](https://github.com/launchdarkly/dotnet-core/tree/main/pkgs/dotnet-server-sdk-dynamodb). This repository remains here to support legacy references to dotnet-server-sdk-dynamodb.
 
